@@ -108,7 +108,7 @@
 	      <configuration>
 	      <appName>fathomless-crag-27555</appName>
 	        <processTypes>
-	          <web>java -jar target/app-application.jar</web>
+	          <web>java -jar application/target/app-application.jar</web>
 	        </processTypes>
 	      </configuration>
 	    </plugin>
