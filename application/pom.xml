@@ -50,6 +50,14 @@
             <goals>
               <goal>repackage</goal>
             </goals>
+            <configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.orginal.vn.app.Application</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
           </execution>
         </executions>
         <configuration>
