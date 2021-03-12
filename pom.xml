@@ -108,7 +108,7 @@
 	      <configuration>
 	      <appName>fathomless-crag-27555</appName>
 	        <processTypes>
-	          <web>java -jar target/library-0.0.1-SNAPSHOT.jar</web>
+	          <web>java -jar target/app-application</web>
 	        </processTypes>
 	      </configuration>
 	    </plugin>

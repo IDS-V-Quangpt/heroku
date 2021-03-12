@@ -14,13 +14,13 @@
       "name": "swagger.api-info",
       "type": "com.orginal.vn.app.config.SwaggerConfigurationProperties$ApiInfo",
       "sourceType": "com.orginal.vn.app.config.SwaggerConfigurationProperties",
-      "sourceMethod": "public com.orginal.vn.app.config.SwaggerConfigurationProperties.ApiInfo getApiInfo() "
+      "sourceMethod": "getApiInfo()"
     },
     {
       "name": "swagger.api-info.contact",
       "type": "com.orginal.vn.app.config.SwaggerConfigurationProperties$ApiInfo$SwaggerContact",
       "sourceType": "com.orginal.vn.app.config.SwaggerConfigurationProperties$ApiInfo",
-      "sourceMethod": "public com.orginal.vn.app.config.SwaggerConfigurationProperties.ApiInfo.SwaggerContact getContact() "
+      "sourceMethod": "getContact()"
     }
   ],
   "properties": [
