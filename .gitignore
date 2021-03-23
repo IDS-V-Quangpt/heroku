@@ -1,10 +1,4 @@
-/.metadata/
-/.recommenders/
-/out/
-/public/
-
-.settings/
-.idea/
-*.iml
-*.class
-target/
+/.gradle/
+/.idea/
+/build/
+/application.properties

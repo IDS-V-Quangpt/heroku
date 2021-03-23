@@ -1,59 +1,44 @@
-# Restful API
-RESTful API for CRUD operations, developed with Spring Boot in Java.
+Hello Spring Salesforce
+=======================
 
-# Function
-Six RESTful APIs for the Game Store web application.
+This is a simple Spring Boot application that connects to Salesforce via the REST APIs.
 
-API                       | Description         | URL
---------------------------|---------------------|--------------
-GET /api/products         | Get all products    | GET [http://localhost:8080/api/products](http://localhost:8080/api/products)
-GET /api/products/{id}    | Get a product by ID | GET [http://localhost:8080/api/products/1](http://localhost:8080/api/products/1)
-POST /api/products        | Add a new product   | POST [http://localhost:8080/api/products](http://localhost:8080/api/products)
-PUT /api/products/{id}    | Update a product    | PUT [http://localhost:8080/api/products/1](http://localhost:8080/api/products/1)
-DELETE /api/products/{id} | Delete a product    | DELETE [http://localhost:8080/api/products/1](http://localhost:8080/api/products/1)
-POST /api/upload          | Upload an image     | POST [http://localhost:8080/api/upload](http://localhost:8080/api/upload)
 
-# Setup Locally
-```bash
-git clone https://github.com/jojozhuang/restful-api-springboot.git
-mvn spring-boot:run
-```
-Access http://localhost:8080/api/products in web browser or PostMan, you should get the following JSON as response.
-```json
-[  
-   {  
-      "id":3,
-      "productName":"Wireless Controller",
-      "price":19.99,
-      "image":"http://localhost:5000/images/controller.jpg"
-   },
-   {  
-      "id":2,
-      "productName":"Wii",
-      "price":269.0,
-      "image":"http://localhost:5000/images/wii.jpg"
-   },
-   {  
-      "id":1,
-      "productName":"Xbox 360",
-      "price":299.0,
-      "image":"http://localhost:5000/images/xbox360.jpg"
-   }
-]
-```
+Run on Heroku:
 
-# Deploy to Heroku
-Follow tutorial [Deploying Spring Boot RESTful API to Heroku](https://jojozhuang.github.io/tutorial/deploying-spring-boot-restful-api-to-heroku) to deploy this Spring Boot app to [Heroku](https://www.heroku.com/).
+1. Deploy this app on Heroku: [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+1. [Create a new Connected App on Salesforce](https://login.salesforce.com/app/mgmt/forceconnectedapps/forceAppEdit.apexp)
+1. Fill in the `Connected App Name`, `API Name`, and `Contact Email` fields
+1. Select `Enable OAuth Settings` and enter the following `Callback URLs`:
 
-Follow tutorial [Continuously Deploy Spring Boot App to Heroku with Travis-CI](https://jojozhuang.github.io/tutorial/continuously-deploy-spring-boot-app-to-heroku-with-travis-ci) to continuously deploy this Spring Boot app to [Heroku](https://www.heroku.com/) with [Travis-CI](https://travis-ci.com/).
+        https://YOUR_HEROKU_APP_NAME.herokuapp.com/login
+        http://localhost:8080/login
 
-The available RESTful API on Heroku is
-* baseURL: https://gamestore-api.herokuapp.com/
+1. Select `Full access (full)` from the list of OAuth Scopes and click `Add`
+1. Click `Save` and them `Continue` to complete the creation of the new Connected App
+1. Manage the settings for your Heroku app (via the [Heroku Dashboard](https://dashboard.heroku.com)) and add `SECURITY_OAUTH2_CLIENT_CLIENT_ID` and `SECURITY_OAUTH2_CLIENT_CLIENT_SECRET`config vars using the values from the newly created Connected App
+1. Wait about 10 minutes until the OAuth app creation is completed
+1. Check out your your new app
 
-For example, request https://gamestore-api.herokuapp.com/api/products to get all products.
 
-# Portfolio
-Read portfolio [Game Store(Angular)](https://jojozhuang.github.io/project/game-store-angular) or [Game Store(React)](http://jojozhuang.github.io/project/game-store-react) to learn how these RESTful APIs are consumed by Angular and React applications.
+Run Locally:
 
-# Tutorial
-Read tutorial [Building RESTful API with Spring Boot](https://jojozhuang.github.io/tutorial/building-restful-api-with-spring-boot) to learn how this RESTful API is built.
+1. If you haven't already done so, create a Salesforce Connected App following the instructions above
+1. Create a file in the root project directory named `application.properties` that contains:
+
+        security.oauth2.client.client-id = YOUR_CONNECTED_APP_CLIENT_ID
+        security.oauth2.client.client-secret = YOUR_CONNECTED_APP_CLIENT_SECRET
+
+    Note: Make sure you do not put this file in SCM!
+
+1. Start the local server via Gradle:
+
+    Mac & Linux:
+
+        ./gradlew dev
+
+    Windows:
+
+        gradlew dev
+
+1. Check out the app: [http://localhost:8080](http://localhost:8080)
