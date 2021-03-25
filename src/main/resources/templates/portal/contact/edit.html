@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head th:replace="portal/layouts/default :: common_header(~{::title}, ~{::link})">
+  <title th:if="${view_mode} == 'profile'">プロフィール - HPF ポータル</title>
+  <title th:unless="${view_mode} == 'profile'">担当者編集 - HPF ポータル</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+  <!-- _top_menu begin -->
+  <div th:replace="portal/layouts/default :: common_top_menu(|${view_mode}|)" />
+  <!-- _top_menu end -->
+  <div class="d-flex">
+    <!-- _left_menu begin -->
+    <div th:if="${view_mode} == 'profile'" >
+      <nav th:replace="portal/layouts/default :: common_left_menu('profile')" />
+    </div>
+    <div th:unless="${view_mode} == 'profile'">
+      <nav th:replace="portal/layouts/default :: common_left_menu('contact')" />
+    </div>
+    <!-- _left_menu end -->
+      
+    <main role="main" class="flex-grow-1">
+      <div class="container mt-4 mb-4 pt-3 pb-4">
+        <div class="col-12">
+          <section class="">
+            <div>
+              <h2 class="info" data-info="ご自身の情報を変更できます。,管理者の方はシステム利用権限設定を変更できます。">担当者情報の入力</h2>
+              <!--<h2 class="info" th:if="${view_mode} == 'profile'">担当者情報の入力</h2>-->
+              <!--<p>ログインの有効化/無効化に関してはHyASの承認作業を必要とするため反映までお時間をいただきます。</p>-->
+            </div>
+            <div class="_edit_area">
+            
+             <div class="alert alert-warning" role="alert" th:if="${limitFlg != null}">
+                権限数を確認してください。
+             </div>
+             <form method="post" class="needs-validation" th:object="${contactForm}" novalidate="" _lpchecked="1">
+              <!--
+              <h3 class="mt-2">アカウント情報</h3>
+               
+               <div class="row">
+                 <div class="col-lg-4 col-md-6 mb-6">
+                   <label for="corporationid__c">法人ID</label>
+                   <input id="corporationid__c" name="corporationid__c" class="form-control" type="text" th:value="${contact.corporationid__c}" disabled>
+                 </div>
+                 
+                 <div class="col-lg-4 col-md-6 mb-6">
+                   <label for="contact_kind__c">ユーザー種別</label>
+                   <select id="contact_kind__c" name="contact_kind__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('contact_kind__c')} ? 'is-invalid' : ''" disabled>
+                     <option th:each="item : ${contact_kinds}" th:value="${item}" th:selected="${item} == *{contact_kind__c}" th:disabled="${item} != *{contact_kind__c}" th:inline="text">[[${item}]]</option>
+                   </select>
+                 </div>
+               </div>
+               -->
+              <input type="hidden" name="corporationid__c" th:value="${contact.corporationid__c}">
+              <h3 class="mt-2">担当者名</h3>
+               <div class="row">
+                 <div class="col-lg-4 col-md-4 mb-4">
+                   <label for="lastname">姓</label>
+                   <input id="lastname" name="lastname" type="text" class="form-control" placeholder="例) 山田" th:classappend="${#fields.hasErrors('lastname')} ? 'is-invalid' : ''" th:field="*{lastname}">
+                   <div class="invalid-feedback" th:errors="*{lastname}"></div>
+                 </div>
+                 <div class="col-lg-4 col-md-4 mb-4">
+                   <label for="firstname">名</label>
+                   <input id="firstname" name="firstname" type="text" class="form-control" placeholder="例) 太郎" th:classappend="${#fields.hasErrors('firstname')} ? 'is-invalid' : ''" th:field="*{firstname}">
+                   <div class="invalid-feedback" th:errors="*{firstname}"></div>
+                 </div>
+               </div>
+
+               <div class="row">
+                 <div class="col-lg-4 col-md-4 mb-4">
+                   <label for="lastnamekana__c">セイ</label>
+                   <input id="lastnamekana__c" name="lastnamekana__c" type="text" class="form-control" placeholder="例) ヤマダ" th:classappend="${#fields.hasErrors('lastnamekana__c')} ? 'is-invalid' : ''" th:field="*{lastnamekana__c}">
+                   <div class="invalid-feedback" th:errors="*{lastnamekana__c}"></div>
+                 </div>	                  
+                 <div class="col-lg-4 col-md-4 mb-4">
+                   <label for="firstnamekana__c">メイ</label>
+                   <input id="firstnamekana__c" name="firstnamekana__c" type="text" class="form-control" placeholder="例) タロウ" th:classappend="${#fields.hasErrors('firstnamekana__c')} ? 'is-invalid' : ''" th:field="*{firstnamekana__c}">
+                   <div class="invalid-feedback" th:errors="*{firstnamekana__c}"></div>
+                 </div>
+               </div>
+
+               <h3 class="mt-2">所属</h3>
+               <div class="row">
+                 <div class="col-md-3 mb-3">
+                   <label for="belongbranchoffice__c">所属支店</label>
+                   <input id="belongbranchoffice__c" name="belongbranchoffice__c" type="text" class="form-control" placeholder="例) XX支店" th:classappend="${#fields.hasErrors('belongbranchoffice__c')} ? 'is-invalid' : ''" th:field="*{belongbranchoffice__c}">
+                   <div class="invalid-feedback" th:errors="*{belongbranchoffice__c}"></div>
+                 </div>
+                 <div class="col-md-3 mb-3">
+                   <label for="department">部署</label>
+                   <input id="department" name="department" type="text" class="form-control" placeholder="例) XX部" th:classappend="${#fields.hasErrors('department')} ? 'is-invalid' : ''" th:field="*{department}">
+                   <div class="invalid-feedback" th:errors="*{department}"></div>
+                 </div>
+                 <div class="col-md-3 mb-3">
+                   <label for="title">役職</label>
+                   <input id="title" name="title" type="text" class="form-control" placeholder="例) 部長" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid' : ''" th:field="*{title}">
+                   <div class="invalid-feedback" th:errors="*{title}"></div>
+                 </div>
+<!--
+                 <div class="col-md-3 mb-3">
+                   <label for="representativename__c">代表者</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="representativename__c_1" name="representativename__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('representativename__c')} ? 'is-invalid' : ''" th:field="*{representativename__c}" th:value="0">
+                         <label class="custom-control-label" for="representativename__c_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="representativename__c_2" name="representativename__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('representativename__c')} ? 'is-invalid' : ''" th:field="*{representativename__c}" th:value="1">
+                         <label class="custom-control-label" for="representativename__c_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{representativename__c}"></div>
+                   
+                 </div>
+-->
+               </div>
+               
+               <h3 class="mt-2">住所</h3>
+               <div class="row">
+                 <div class="col-md-3 mb-3">
+                   <label for="mailingpostalcode">郵便番号</label>
+                   <input id="mailingpostalcode" name="mailingpostalcode" type="text" class="form-control" placeholder="999-9999" th:classappend="${#fields.hasErrors('mailingpostalcode')} ? 'is-invalid' : ''" th:field="*{mailingpostalcode}">
+                   <div class="invalid-feedback" th:errors="*{mailingpostalcode}"></div>
+                 </div>
+               </div>  
+               
+               <div class="row">
+                <div class="col-md-3 mb-3">
+                  <label for="mailingstate">都道府県</label>
+                  <select id="mailingstate" name="mailingstate" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('mailingstate')} ? 'is-invalid' : ''">
+                  <option value=""></option>
+                  <option th:each="pref : ${prefectures}" th:value="${pref}" th:selected="${pref} == *{mailingstate}" th:inline="text">[[${pref}]]</option>
+                  </select>
+                </div>
+                <div class="invalid-feedback" th:errors="*{mailingstate}"></div>
+                <div class="col-md-6 mb-3">
+                   <label for="mailingcity">市区郡</label>
+                   <input id="mailingcity" name="mailingcity" type="text" class="form-control" placeholder="例) XX市" th:classappend="${#fields.hasErrors('mailingcity')} ? 'is-invalid' : ''" th:field="*{mailingcity}">
+                   <div class="invalid-feedback" th:errors="*{mailingcity}"></div>
+                </div>
+                <div class="col-md-3 mb-3">
+                   <label for="mailingstreet">町名・番地</label>
+                   <input id="mailingstreet" name="mailingstreet" type="text" class="form-control" placeholder="例) XX町" th:classappend="${#fields.hasErrors('mailingstreet')} ? 'is-invalid' : ''" th:field="*{mailingstreet}">
+                   <div class="invalid-feedback" th:errors="*{mailingstreet}"></div>
+                </div>
+               </div>
+               
+               <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="buildingname__c">ビル・マンション名</label>
+                  <input id="buildingname__c" name="buildingname__c" type="text" class="form-control" placeholder="例) XXビル" th:classappend="${#fields.hasErrors('buildingname__c')} ? 'is-invalid' : ''" th:field="*{buildingname__c}">
+                  <div class="invalid-feedback" th:errors="*{buildingname__c}"></div>
+                </div>
+               </div>	                
+               
+               <h3 class="mt-2">連絡先</h3>
+               <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="phone">TEL</label>
+                    <input id="phone" name="phone" type="text" class="form-control" placeholder="099-999-9999" th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''" th:field="*{phone}">
+                    <div class="invalid-feedback" th:errors="*{phone}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3 d-none">
+                    <label for="donotcall">TEL NG</label>
+                    <div class="row">
+                     <div class="col-4">
+                      <div class="custom-control custom-radio">
+                        <input id="donotcall_1" name="donotcall" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('donotcall')} ? 'is-invalid' : ''" th:field="*{donotcall}" th:value="0">
+                        <label class="custom-control-label" for="donotcall_1">OFF</label>
+                      </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="donotcall_2" name="donotcall" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('donotcall')} ? 'is-invalid' : ''" th:field="*{donotcall}" th:value="1">
+                         <label class="custom-control-label" for="donotcall_2">ON</label>
+                       </div>
+                     </div>
+                    </div>
+                    <div class="invalid-feedback" th:errors="*{donotcall}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                   <label for="mobilephone">携帯TEL</label>
+                   <input id="mobilephone" name="mobilephone" type="text" class="form-control" placeholder="099-999-9999" th:classappend="${#fields.hasErrors('mobilephone')} ? 'is-invalid' : ''" th:field="*{mobilephone}">
+                   <div class="invalid-feedback" th:errors="*{mobilephone}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3 d-none">
+                   <label for="mobilephoneng__c">携帯TEL NG</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="mobilephoneng__c_1" name="mobilephoneng__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('mobilephoneng__c')} ? 'is-invalid' : ''" th:field="*{mobilephoneng__c}" th:value="0">
+                         <label class="custom-control-label" for="mobilephoneng__c_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="mobilephoneng__c_2" name="mobilephoneng__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('mobilephoneng__c')} ? 'is-invalid' : ''" th:field="*{mobilephoneng__c}" th:value="1">
+                         <label class="custom-control-label" for="mobilephoneng__c_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{mobilephoneng__c}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                   <label for="fax">Fax</label>
+                   <input id="fax" name="fax" type="text" class="form-control" placeholder="099-999-9999" th:classappend="${#fields.hasErrors('fax')} ? 'is-invalid' : ''" th:field="*{fax}">
+                   <div class="invalid-feedback" th:errors="*{fax}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3 d-none">
+                   <label for="hasoptedoutoffax">Fax NG</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="hasoptedoutoffax_1" name="hasoptedoutoffax" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('hasoptedoutoffax')} ? 'is-invalid' : ''" th:field="*{hasoptedoutoffax}" th:value="0">
+                         <label class="custom-control-label" for="hasoptedoutoffax_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="hasoptedoutoffax_2" name="hasoptedoutoffax" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('hasoptedoutoffax')} ? 'is-invalid' : ''" th:field="*{hasoptedoutoffax}" th:value="1">
+                         <label class="custom-control-label" for="hasoptedoutoffax_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{hasoptedoutoffax}"></div>
+                  </div>
+               </div>
+
+               <div class="row">
+                 <div class="col-md-4 mb-3">
+                   <label for="email">Email</label>
+                   <input id="email" name="email" type="text" class="form-control" placeholder="sample@example.com" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''" th:field="*{email}">
+                   <div class="invalid-feedback" th:errors="*{email}"></div>
+                 </div>
+                 <div class="col-md-4 mb-3 d-none">
+                   <label for="hasoptedoutofemail">Email NG</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="hasoptedoutofemail_1" name="hasoptedoutofemail" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('hasoptedoutofemail')} ? 'is-invalid' : ''" th:field="*{hasoptedoutofemail}" th:value="0">
+                         <label class="custom-control-label" for="hasoptedoutofemail_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="hasoptedoutofemail_2" name="hasoptedoutofemail" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('hasoptedoutofemail')} ? 'is-invalid' : ''" th:field="*{hasoptedoutofemail}" th:value="1">
+                         <label class="custom-control-label" for="hasoptedoutofemail_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{hasoptedoutofemail}"></div>
+                 </div>
+                 <div class="col-md-8 mb-3">
+                   <p style="font-size: 12px;" class ="topsize">担当者の追加を行う際は、Emailの入力が必須となります。<br>ご登録後、入力いただいたEmailへパスワードのご案内をさせていただきます。</p>
+                 </div>
+
+
+               </div>
+<!--               
+               <div class="row">
+                 <div class="col-md-4 mb-3">
+                   <label for="mobilemail__c">携帯Email</label>
+                   <input id="mobilemail__c" name="mobilemail__c" type="text" class="form-control" placeholder="sample@example.com" th:classappend="${#fields.hasErrors('mobilemail__c')} ? 'is-invalid' : ''" th:field="*{mobilemail__c}">
+                   <div class="invalid-feedback" th:errors="*{mobilemail__c}"></div>
+                 </div>
+                 <div class="col-md-4 mb-3 d-none">
+                   <label for="mobilemailng__c">携帯Email NG</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="mobilemailng__c_1" name="mobilemailng__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('mobilemailng__c')} ? 'is-invalid' : ''" th:field="*{mobilemailng__c}" th:value="0">
+                         <label class="custom-control-label" for="mobilemailng__c_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="mobilemailng__c_2" name="mobilemailng__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('mobilemailng__c')} ? 'is-invalid' : ''" th:field="*{mobilemailng__c}" th:value="1">
+                         <label class="custom-control-label" for="mobilemailng__c_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{mobilemailng__c}"></div>
+                 </div>
+               </div>
+-->
+               <!-- _page_title begin -->
+               <div class="_page_title mt-2">
+                 <div class="row">
+                   <div class="col"><h2>システム利用権限設定</h2></div>
+                 </div>
+               </div>
+               <!-- _page_title end -->
+
+               <div>
+               <h3 class="mt-2">利用権限</h3>
+                 <div class="row">
+<!--                   
+                   <div class="col-md-3 mb-3">
+                     <label for="role_of_r_de_go__c">RでGo利用権限</label>
+                     <div>
+                       <select id="role_of_r_de_go__c" name="role_of_r_de_go__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_r_de_go__c')} ? 'is-invalid' : ''">
+                         <option value=""></option>
+                         <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_r_de_go__c}" th:inline="text">[[${item}]]</option>
+                       </select>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{role_of_r_de_go__c}"></div>
+                   </div>
+-->
+                   <div class="col-md-3 mb-3">
+                     <label for="role_of_r_de_go__c">RでGo利用権限</label>
+                     <div th:if="${role_of_r_de_go} == '利用可' and ${user_info.hpf_admin} != 'member'">
+                       <select id="role_of_r_de_go__c" name="role_of_r_de_go__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_r_de_go__c')} ? 'is-invalid' : ''">
+                         <option value=""></option>
+                         <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_r_de_go__c}" th:inline="text">[[${item}]]</option>
+                       </select>
+                     </div>
+                     
+                     <div th:if="${role_of_r_de_go} == '利用不可' or ${user_info.hpf_admin} == 'member'">
+                      <select id="role_of_r_de_go2__c" name="role_of_r_de_go__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_r_de_go__c')} ? 'is-invalid' : ''" disabled>
+                        <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_r_de_go__c}" th:disabled="${item} != *{role_of_r_de_go__c}" th:inline="text">[[${item}]]</option>
+                      </select>
+                     <input type="hidden" name="role_of_r_de_go" th:value="${role_of_r_de_go}">
+                     </div>
+                     
+                     <div class="invalid-feedback" th:errors="*{role_of_r_de_go__c}"></div>
+                     
+                     <input type="hidden" name="before_role_of_r_de_go__c" th:value="${before_role_of_r_de_go__c}">
+                   </div>
+<!--
+                   <div class="col-md-3 mb-3">
+                     <label for="role_of_iekachi__c">iekachi BOX利用権限</label>
+                     <div th:if="${role_of_iekachi} == '利用可' and ${user_info.hpf_admin} != 'member'">
+                       <select id="role_of_iekachi__c" name="role_of_iekachi__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_iekachi__c')} ? 'is-invalid' : ''">
+                         <option value=""></option>
+                         <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_iekachi__c}" th:inline="text">[[${item}]]</option>
+                       </select>
+                     </div>
+                     
+                     <div th:if="${role_of_iekachi} == '利用不可' or ${user_info.hpf_admin} == 'member'">
+                      <select id="role_of_iekachi2__c" name="role_of_iekachi__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_iekachi__c')} ? 'is-invalid' : ''" disabled>
+                        <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_iekachi__c}" th:disabled="${item} != *{role_of_iekachi__c}" th:inline="text">[[${item}]]</option>
+                      </select>
+                     <input type="hidden" name="role_of_iekachi" th:value="${role_of_iekachi}"> 
+                     </div>
+                     
+                     <div class="invalid-feedback" th:errors="*{role_of_iekachi__c}"></div>
+                     
+                     <input type="hidden" name="before_role_of_iekachi__c" th:value="${before_role_of_iekachi__c}">
+                   </div>
+-->
+                   <div class="col-md-3 mb-3">
+                     <label for="role_of_pms__c">工務次長DX利用権限</label>
+                     <div th:if="${role_of_pms} == '利用可' and ${user_info.hpf_admin} != 'member'">
+                       <select id="role_of_pms__c" name="role_of_pms__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_pms__c')} ? 'is-invalid' : ''">
+                         <option value=""></option>
+                         <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_pms__c}" th:inline="text">[[${item}]]</option>
+                       </select>
+                     </div>
+                     
+                     <div th:if="${role_of_pms} == '利用不可' or ${user_info.hpf_admin} == 'member'">
+                      <select id="role_of_pms2__c" name="role_of_pms__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_pms__c')} ? 'is-invalid' : ''" disabled>
+                        <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_pms__c}" th:disabled="${item} != *{role_of_pms__c}" th:inline="text">[[${item}]]</option>
+                      </select>
+                     <input type="hidden" name="role_of_pms" th:value="${role_of_pms}"> 
+                     </div>
+                     
+                     <div class="invalid-feedback" th:errors="*{role_of_pms__c}"></div>
+                     
+                     <input type="hidden" name="before_role_of_pms__c" th:value="${before_role_of_pms__c}">
+                   </div>
+<!--
+                   <div class="col-md-3 mb-3">
+                     <label for="role_of_cms__c">CMS利用権限</label>
+                     <div th:if="${role_of_cms} == '利用可' and ${user_info.hpf_admin} != 'member'">
+                       <select id="role_of_cms__c" name="role_of_cms__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_cms__c')} ? 'is-invalid' : ''">
+                         <option value=""></option>
+                         <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_cms__c}" th:inline="text">[[${item}]]</option>
+                       </select>
+                     </div>
+                     
+                     <div th:if="${role_of_cms} == '利用不可' or ${user_info.hpf_admin} == 'member'">
+                      <select id="role_of_cms2__c" name="role_of_cms__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('role_of_cms__c')} ? 'is-invalid' : ''" disabled>
+                        <option th:each="item : ${service_roles}" th:value="${item}" th:selected="${item} == *{role_of_cms__c}" th:disabled="${item} != *{role_of_cms__c}" th:inline="text">[[${item}]]</option>
+                      </select>
+                     <input type="hidden" name="role_of_cms" th:value="${role_of_cms}"> 
+                     </div>
+                     
+                     <div class="invalid-feedback" th:errors="*{role_of_cms__c}"></div>
+                     
+                     <input type="hidden" name="before_role_of_cms__c" th:value="${before_role_of_cms__c}">
+                   </div>
+-->
+                 </div> 
+               </div>
+<!--               
+               <div>
+               <h3 class="mt-2">メルマガ配信設定</h3>
+                 <div class="row">
+                   <div class="col-md-4 mb-3">
+                     <label for="plaza__c">HyAS PLAZA 送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="plaza__c_1" name="plaza__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('plaza__c')} ? 'is-invalid' : ''" th:field="*{plaza__c}" th:value="0">
+                           <label class="custom-control-label" for="plaza__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="plaza__c_2" name="plaza__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('plaza__c')} ? 'is-invalid' : ''" th:field="*{plaza__c}" th:value="1">
+                           <label class="custom-control-label" for="plaza__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{plaza__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="plazamail__c">HyAS PLAZA NETメルマガ送付希望（会員様限定メルマガ）</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="plazamail__c_1" name="plazamail__c" type="radio" class="custom-control-input" th:field="*{plazamail__c}" th:value="0">
+                           <label class="custom-control-label" for="plazamail__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="plazamail__c_2" name="plazamail__c" type="radio" class="custom-control-input" th:field="*{plazamail__c}" th:value="1">
+                           <label class="custom-control-label" for="plazamail__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{plazamail__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="view__c">HyAS View 送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="view__c_1" name="view__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('plazamail__c')} ? 'is-invalid' : ''" th:field="*{view__c}" th:value="0">
+                           <label class="custom-control-label" for="view__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="view__c_2" name="view__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('plazamail__c')} ? 'is-invalid' : ''" th:field="*{view__c}" th:value="1">
+                           <label class="custom-control-label" for="view__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{view__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="viewmail__c">HyAS Viewnetメルマガ送付希望（業界情報通信）</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="viewmail__c_1" name="viewmail__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('viewmail__c')} ? 'is-invalid' : ''" th:field="*{viewmail__c}" th:value="0">
+                           <label class="custom-control-label" for="viewmail__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="viewmail__c_2" name="viewmail__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('viewmail__c')} ? 'is-invalid' : ''" th:field="*{viewmail__c}" th:value="1">
+                           <label class="custom-control-label" for="viewmail__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{viewmail__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinrplushouse__c">HyAS R+houseメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinrplushouse__c_1" name="needsmailmagazinrplushouse__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinrplushouse__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinrplushouse__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinrplushouse__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinrplushouse__c_2" name="needsmailmagazinrplushouse__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinrplushouse__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinrplushouse__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinrplushouse__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinrplushouse__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagaziniekachiforrplusadm__c">HyAS 家価値（R+、ADM）メルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagaziniekachiforrplusadm__c_1" name="needsmailmagaziniekachiforrplusadm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagaziniekachiforrplusadm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagaziniekachiforrplusadm__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagaziniekachiforrplusadm__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagaziniekachiforrplusadm__c_2" name="needsmailmagaziniekachiforrplusadm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagaziniekachiforrplusadm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagaziniekachiforrplusadm__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagaziniekachiforrplusadm__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagaziniekachiforrplusadm__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagaziniekachiforippan__c">HyAS 家価値（一般）メルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagaziniekachiforippan__c_1" name="needsmailmagaziniekachiforippan__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagaziniekachiforippan__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagaziniekachiforippan__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagaziniekachiforippan__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagaziniekachiforippan__c_2" name="needsmailmagaziniekachiforippan__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagaziniekachiforippan__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagaziniekachiforippan__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagaziniekachiforippan__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagaziniekachiforippan__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagaziniekachibox__c">HyAS iekachiBOXメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagaziniekachibox__c_1" name="needsmailmagaziniekachibox__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagaziniekachibox__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagaziniekachibox__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagaziniekachibox__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagaziniekachibox__c_2" name="needsmailmagaziniekachibox__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagaziniekachibox__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagaziniekachibox__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagaziniekachibox__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagaziniekachibox__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinfp__c">HyAS FPメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinfp__c_1" name="needsmailmagazinfp__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinfp__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinfp__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinfp__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinfp__c_2" name="needsmailmagazinfp__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinfp__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinfp__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinfp__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinfp__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinfsm__c">HyAS FSMメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinfsm__c_1" name="needsmailmagazinfsm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinfsm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinfsm__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinfsm__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinfsm__c_2" name="needsmailmagazinfsm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinfsm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinfsm__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinfsm__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinfsm__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinadm__c">HyAS ADMメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinadm__c_1" name="needsmailmagazinadm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinadm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinadm__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinadm__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinadm__c_2" name="needsmailmagazinadm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinadm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinadm__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinadm__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinadm__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinams__c">HyAS AMSメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinams__c_1" name="needsmailmagazinams__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinams__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinams__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinams__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinams__c_2" name="needsmailmagazinams__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinams__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinams__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinams__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinams__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazincms__c">HyAS CMSメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazincms__c_1" name="needsmailmagazincms__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazincms__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazincms__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazincms__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazincms__c_2" name="needsmailmagazincms__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazincms__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazincms__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazincms__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazincms__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinhysp__c">HyAS HySPメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinhysp__c_1" name="needsmailmagazinhysp__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinhysp__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinhysp__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinhysp__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinhysp__c_2" name="needsmailmagazinhysp__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinhysp__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinhysp__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinhysp__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinhysp__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazintochisma__c">HyAS トチスマメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazintochisma__c_1" name="needsmailmagazintochisma__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazintochisma__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazintochisma__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazintochisma__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazintochisma__c_2" name="needsmailmagazintochisma__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazintochisma__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazintochisma__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazintochisma__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazintochisma__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazintmd__c">HyAS TMDメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazintmd__c_1" name="needsmailmagazintmd__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazintmd__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazintmd__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazintmd__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazintmd__c_2" name="needsmailmagazintmd__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazintmd__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazintmd__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazintmd__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazintmd__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazingg__c">HyAS GGメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazingg__c_1" name="needsmailmagazingg__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazingg__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazingg__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazingg__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazingg__c_2" name="needsmailmagazingg__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazingg__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazingg__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazingg__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazingg__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinhc__c">HyAS HCメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinhc__c_1" name="needsmailmagazinhc__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinhc__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinhc__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinhc__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinhc__c_2" name="needsmailmagazinhc__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinhc__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinhc__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinhc__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinhc__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinhih__c">HyAS HIHメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinhih__c_1" name="needsmailmagazinhih__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinhih__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinhih__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinhih__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinhih__c_2" name="needsmailmagazinhih__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinhih__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinhih__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinhih__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinhih__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinws__c">HyAS WSメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinws__c_1" name="needsmailmagazinws__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinws__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinws__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinws__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinws__c_2" name="needsmailmagazinws__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinws__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinws__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinws__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinws__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinstay__c">HyAS STAYメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinstay__c_1" name="needsmailmagazinstay__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinstay__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinstay__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinstay__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinstay__c_2" name="needsmailmagazinstay__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinstay__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinstay__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinstay__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinstay__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazindecos__c">HyAS デコスメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazindecos__c_1" name="needsmailmagazindecos__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazindecos__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazindecos__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazindecos__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazindecos__c_2" name="needsmailmagazindecos__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazindecos__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazindecos__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazindecos__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazindecos__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinpms__c">HyAS PMSメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinpms__c_1" name="needsmailmagazinpms__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinpms__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinpms__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinpms__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinpms__c_2" name="needsmailmagazinpms__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinpms__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinpms__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinpms__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinpms__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazintm__c">HyAS TMメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazintm__c_1" name="needsmailmagazintm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazintm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazintm__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazintm__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazintm__c_2" name="needsmailmagazintm__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazintm__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazintm__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazintm__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazintm__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinrpluskenchikuka__c">HyAS R+建築家メルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinrpluskenchikuka__c_1" name="needsmailmagazinrpluskenchikuka__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinrpluskenchikuka__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinrpluskenchikuka__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinrpluskenchikuka__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinrpluskenchikuka__c_2" name="needsmailmagazinrpluskenchikuka__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinrpluskenchikuka__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinrpluskenchikuka__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinrpluskenchikuka__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinrpluskenchikuka__c}"></div>
+                   </div>
+                   
+                   
+                   <div class="col-md-4 mb-3">
+                     <label for="needsmailmagazinrplusic__c">HyAS R+ICメルマガ送付希望</label>
+                     <div class="row">
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinrplusic__c_1" name="needsmailmagazinrplusic__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinrplusic__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinrplusic__c}" th:value="0">
+                           <label class="custom-control-label" for="needsmailmagazinrplusic__c_1">OFF</label>
+                         </div>
+                       </div>
+                       <div class="col-3">
+                         <div class="custom-control custom-radio">
+                           <input id="needsmailmagazinrplusic__c_2" name="needsmailmagazinrplusic__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('needsmailmagazinrplusic__c')} ? 'is-invalid' : ''" th:field="*{needsmailmagazinrplusic__c}" th:value="1">
+                           <label class="custom-control-label" for="needsmailmagazinrplusic__c_2">ON</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{needsmailmagazinrplusic__c}"></div>
+                   </div>
+                   
+                   
+                 </div>
+               </div>
+               -->
+               <div class="edit-perm">
+               <h3 class="mt-2">認証</h3>
+                 <div class="row">
+                   <div class="col-md-12 mb-3" id="is_approval_area">
+                     <label for="is_approval_check__c">ログインの有効化/無効化</label>
+                     <div class="row">
+                       <div class="col-4">
+                         <div class="custom-control custom-radio">
+                           <input id="is_approval_check__c_2" name="is_approval_check__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('is_approval_check__c')} ? 'is-invalid' : ''" th:field="*{is_approval_check__c}" th:value="1">
+                           <label class="custom-control-label" for="is_approval_check__c_2" style="width: 40px;">有効化</label>
+                         </div>
+                       </div>
+                       <div class="col-4">
+                         <div class="custom-control custom-radio">
+                           <input id="is_approval_check__c_1" name="is_approval_check__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('is_approval_check__c')} ? 'is-invalid' : ''" th:field="*{is_approval_check__c}" th:value="0">
+                           <label class="custom-control-label" for="is_approval_check__c_1" style="width: 40px;">無効化</label>
+                         </div>
+                       </div>
+                     </div>
+                     <div class="invalid-feedback" th:errors="*{is_approval_check__c}"></div>
+                     <p style="font-size: 12px;">ご登録いただく担当者がいずれかのシステムをご利用の際は、有効化を選択ください。<br>事務局にて認証権限の付与を行いますので、少々お時間をいただきます。</p>
+                   </div>
+                   <!--
+                   <div class="col-md-4 mb-3">
+                     <div class="edit-perm" id="is_invalid_area">
+                        <label for="is_invalid__c">認証無効化要求</label>
+                        <div class="row">
+                          <div class="col-3">
+                            <div class="custom-control custom-radio">
+                              <input id="is_invalid__c_1" name="is_invalid__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('is_invalid__c')} ? 'is-invalid' : ''" th:field="*{is_invalid__c}" th:value="0">
+                              <label class="custom-control-label" for="is_invalid__c_1">OFF</label>
+                            </div>
+                          </div>
+                          <div class="col-3">
+                            <div class="custom-control custom-radio">
+                              <input id="is_invalid__c_2" name="is_invalid__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('is_invalid__c')} ? 'is-invalid' : ''" th:field="*{is_invalid__c}" th:value="1">
+                              <label class="custom-control-label" for="is_invalid__c_2">ON</label>
+                            </div>
+                          </div>
+                        </div>
+                        <p class="small">※ 当システムを利用不可にする場合「ON」にしてください。</p>
+                        <div class="invalid-feedback" th:errors="*{is_invalid__c}"></div>
+                     </div>
+                   </div>
+                  -->
+                 </div>
+               </div>
+               
+               <div class="edit-perm" id="is_approval_area2">
+                 <div class="edit-perm" id="is_invalid_area2">
+                   <div class="row">
+                     <div class="col-md-12 mb-3">
+                       <label for="invalid_reason__c">備考</label>
+                       <textarea id="invalid_reason__c" name="invalid_reason__c" class="form-control" rows="3" th:classappend="${#fields.hasErrors('invalid_reason__c')} ? 'is-invalid' : ''" th:text="*{invalid_reason__c}"></textarea>
+                       <div class="invalid-feedback" th:errors="*{invalid_reason__c}"></div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               
+               <div class="row edit-perm" id="is_retirement_area" th:classappend="|${is_ediable.retire ? '':'d-none'}|">
+                 <div class="col-md-6 mb-3">
+                   <label for="retirement__c">退職</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="retirement__c_1" name="retirement__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('retirement__c')} ? 'is-invalid' : ''" th:field="*{retirement__c}" th:value="0">
+                         <label class="custom-control-label" for="retirement__c_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="retirement__c_2" name="retirement__c" type="radio" class="custom-control-input" th:classappend="${#fields.hasErrors('retirement__c')} ? 'is-invalid' : ''" th:field="*{retirement__c}" th:value="1">
+                         <label class="custom-control-label" for="retirement__c_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{retirement__c}"></div>
+                 </div>
+               </div>
+<!--
+               <hr/>
+
+               <div class="row edit-perm">
+                 <div class="col-md-6 mb-3">
+                   <label for="r_house_certificate_number__c">R+house施工責任者修了証番号</label>
+                   <input id="r_house_certificate_number__c" name="r_house_certificate_number__c" class="form-control" type="text" th:value="${contact.r_house_certificate_number__c}" disabled>
+                 </div>
+                 <div class="col-md-6 mb-3">
+                   <label for="r_house_construction_supervisor__c">R+house施工責任者区分</label>
+                   <input id="r_house_construction_supervisor__c" name="r_house_construction_supervisor__c" class="form-control" type="text" th:value="${contact.r_house_construction_supervisor__c}" disabled>
+                 </div>
+                 <div class="col-md-6 mb-3">
+                   <label for="r_house_certificate_remove__c">R+house施工責任者認定削除</label>
+                   <div class="row">
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="r_house_certificate_remove__c_1" name="r_house_certificate_remove__c" type="radio" class="custom-control-input" th:checked="${!(contact.r_house_certificate_remove__c ?: true)}" th:value="0" disabled>
+                         <label class="custom-control-label" for="r_house_certificate_remove__c_1">OFF</label>
+                       </div>
+                     </div>
+                     <div class="col-4">
+                       <div class="custom-control custom-radio">
+                         <input id="r_house_certificate_remove__c_2" name="r_house_certificate_remove__c" type="radio" class="custom-control-input" th:checked="${contact.r_house_certificate_remove__c ?: false}" th:value="1" disabled>
+                         <label class="custom-control-label" for="r_house_certificate_remove__c_2">ON</label>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+               
+               <div class="row">
+                 <div class="col-md-3 mb-3">
+                   <label for="createddate">作成日</label>
+                   <input id="createddate" name="createddate" class="form-control" type="text" th:value="${contact.createddate}" disabled>
+                 </div>
+                 <div class="col-md-3 mb-3">
+                   <label for="systemmodstamp">最終更新日時</label>
+                   <input id="systemmodstamp" name="systemmodstamp" class="form-control" type="text" th:value="${contact.systemmodstamp}" disabled>
+                 </div>
+               </div>
+-->
+               <h3 class="mt-2">アカウント情報</h3>
+               <div class="row">  
+                 <div class="col-lg-4 col-md-6 mb-6">
+                   <label for="contact_id__c">担当者ID</label>
+                   <input id="contact_id__c" name="contact_id__c" class="form-control" type="text" th:field="*{contact_id__c}" readonly>
+                 </div>
+                 <div class="col-lg-4 col-md-6 mb-6 edit-perm">
+                   <label for="hpf_permission__c">HPF担当者権限</label>
+                   <div>
+                     <select id="hpf_permission__c" name="hpf_permission__c" class="custom-select d-block w-100" th:classappend="${#fields.hasErrors('hpf_permission__c')} ? 'is-invalid' : ''">
+                       <option th:each="item : ${permissions}" th:value="${item.key}" th:selected="${item.key} == *{hpf_permission__c}" th:inline="text">[[${item.value}]]</option>
+                     </select>
+                   </div>
+                   <div class="invalid-feedback" th:errors="*{hpf_permission__c}"></div>
+                 </div>
+               </div>
+               <hr class="mb-4">
+               <div class="d-flex justify-content-end">
+                   <a th:if="${view_mode} == 'profile'" th:href="@{/portal/service/}"
+                    class="mr-3 btn btn-secondary" role="button" aria-pressed="true">戻る</a>
+                   <a th:unless="${view_mode} == 'profile'" th:href="@{/portal/contact/list/}"
+                    class="mr-3 btn btn-secondary" role="button" aria-pressed="true">戻る</a>
+                   <input type="submit" id = "chgactive" class="btn btn-primary" value="確認" disabled/>
+               </div>
+             </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script th:inline="javascript">
+
+$(function(){
+/*  
+  $("input[name='is_approval_check__c']").on("click", function (ev) {
+    checkApproval();
+  });
+  $("input[name='is_invalid__c']").on("click", function (ev) {
+  //  checkInvalidAndRetire();
+  });
+  $("input[name='retirement__c']").on("click", function (ev) {
+    //checkInvalidAndRetire();
+    checkRetire();
+  });
+
+  function checkApproval() {
+    // 認証有効化要求
+    var val = ($("input[name='is_approval_check__c']:checked").val() === '1');
+    if (val) {
+      //$("#is_invalid_area").hide();
+      $("#is_retirement_area").hide();
+      $("#is_invalid_area").addClass('hide-area');
+      $("#is_invalid_area2").addClass('hide-area');
+      $("#is_retirement_area").addClass('hide-area');
+    } else {
+      //$("#is_invalid_area").show();
+      $("#is_retirement_area").show();
+      $("#is_invalid_area").removeClass('hide-area');
+      $("#is_invalid_area2").removeClass('hide-area');
+      $("#is_retirement_area").removeClass('hide-area');
+    }
+  }
+  function checkInvalidAndRetire() {
+    // 認証無効化要求、 退職
+    var invalidVal = ($("input[name='is_invalid__c']:checked").val() === '1');
+    var retirementVal = ($("input[name='retirement__c']:checked").val() === '1');
+    var val = (invalidVal || retirementVal);
+    if (val) {
+      //$("#is_approval_area").hide();
+      $("#is_approval_area").addClass('hide-area');
+      $("#is_approval_area2").addClass('hide-area');
+    } else {
+      //$("#is_approval_area").show();
+      $("#is_approval_area").removeClass('hide-area');
+      $("#is_approval_area2").removeClass('hide-area');
+    }
+  }
+  checkApproval();
+  checkInvalidAndRetire();
+*/  
+   $('input[name="retirement__c"]:radio').change( function() {
+      var radioval = $(this).val();
+      if(radioval == 1){
+         $('input[name="is_approval_check__c"]' ).val(['0']);
+      }
+   }); 
+
+  var field = document.getElementById("chgactive");
+
+  //インプットが切り替わったら起動
+  $('input').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+
+  //テキストエリアが切り替わったら起動
+  $('textarea').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+
+  //セレクトボックスが切り替わったら起動
+  $('select').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+  
+  //ラジオボタンが切り替わったら起動
+  $('radio').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+  
+ //戻るボタンから遷移
+ if([[${return}]]){
+    
+    field.removeAttribute("disabled");
+ }
+  
+});
+</script>
+
+<style>
+._edit_area .hide-area {
+  display: none;
+}
+
+.col-3{
+  max-width: 40%;
+}
+@media screen and (min-width: 768px){
+    .topsize {
+      margin-top: 20px;
+    }
+}
+@media (max-width: 767px) {
+    .topsize {
+      margin-top: 0px;
+    }
+}
+</style>
+
+<style th:unless="${is_ediable.edit_perm}">
+._edit_area .edit-perm {
+  display: none;
+}
+
+</style>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.hyas.hpf.database.AccountWaitRepository">
+
+  <!-- # ================================================== SQL定義 -->
+  <select id="count" resultType="long">
+    SELECT COUNT(*)
+      FROM salesforce.account_wait__c
+    <include refid="findByCriteriaWherePhrase" />
+  </select>
+
+  <select id="search" resultType="AccountWait">
+    SELECT *
+      FROM salesforce.account_wait__c
+    <include refid="findByCriteriaWherePhrase" />
+    <foreach item="item" collection="pageable.sort" open="ORDER BY" close="" separator=",">
+      ${item.property} ${item.direction}
+    </foreach>
+    LIMIT  #{pageable.pageSize}
+    OFFSET #{pageable.offset}
+  </select>
+
+  <!-- # ================================================== SQLパーツ定義 -->
+  <sql id="findByCriteriaWherePhrase">
+    <where>
+      <if test="criteria.corporation_wait_id__c != null">
+        AND corporation_wait_id__c = #{criteria.corporation_wait_id__c}
+      </if>
+      <if test="criteria.corporationid__c != null">
+        AND corporationid__c = #{criteria.corporationid__c}
+      </if>
+      <if test="criteria.is_merge_completion__c != null">
+        AND is_merge_completion__c = #{criteria.is_merge_completion__c}
+      </if>
+      <if test="criteria.isdeleted != null">
+        AND isdeleted = #{criteria.isdeleted}
+      </if>
+      <if test="criteria.is_service_delete__c != null">
+        AND is_service_delete__c = #{criteria.is_service_delete__c}
+      </if>
+    </where>
+  </sql>
+
+</mapper>

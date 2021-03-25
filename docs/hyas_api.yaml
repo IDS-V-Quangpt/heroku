@@ -1,0 +1,5372 @@
+swagger: "2.0"
+info:
+  description: |
+    利用するにはサービス認証キーが必要です。
+    各サービスに指定された認証キーをHTTP Request時のRquest Headerに含める必要があります。
+      X-AUTH-APP-KEY
+    に指定して送信してください。
+  version: "0.9.0"
+  title: "Hyas API"
+host: "www.chmonos.com"
+# host: "localhost:8443"
+basePath: "/"
+tags:
+- name: "account"
+  description: "加盟店"
+- name: "contact"
+  description: "担当者"
+- name: "owner"
+  description: "オーナー"
+- name: "user"
+  description: "ユーザー"
+- name: "project"
+  description: "案件"
+- name: "property"
+  description: "物件"
+- name: "fileinfo"
+  description: "ファイル情報管理"
+- name: "auth"
+  description: "認証"
+- name: "file"
+  description: "ファイルストレージ"
+schemes:
+- "https"
+paths:
+  /api/accounts:
+    post:
+      tags:
+      - "account"
+      security:
+        - app_key: []
+      summary: "追加"
+      description: ""
+      operationId: "addAccount"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Account"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Account"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+    get:
+      tags:
+      - "account"
+      security:
+        - app_key: []
+      summary: "検索"
+      description: ""
+      operationId: "indexAccount"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "ページ"
+      - name: "size"
+        in: "query"
+        type: "integer"
+        description: "取得件数"
+      - name: "corporationid__c"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店ID
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "name"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店名
+          * 照合: 部分一致
+      - name: "namekana__c"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店名カナ
+          * 照合: 部分一致
+      - name: "billingpostalcode"
+        in: "query"
+        type: "string"
+        description: |
+          郵便番号
+          * 照合: 前方一致
+      - name: "billingstate"
+        in: "query"
+        type: "string"
+        description: |
+          都道府県
+          * 照合: 前方一致
+      - name: "billingcity"
+        in: "query"
+        type: "string"
+        description: |
+          市町村
+          * 照合: 前方一致
+      - name: "billingstreet"
+        in: "query"
+        type: "string"
+        description: |
+          町名・地番
+          * 照合: 前方一致
+      - name: "buildingname__c"
+        in: "query"
+        type: "string"
+        description: |
+          建物名
+          * 照合: 前方一致
+      - name: "phone"
+        in: "query"
+        type: "string"
+        description: |
+          電話番号
+          * 照合: 完全一致
+      - name: "phoneng__c"
+        in: "query"
+        type: "boolean"
+        description: "TEL NG"
+      - name: "fax"
+        in: "query"
+        type: "string"
+        description: |
+          FAX
+          * 照合: 完全一致
+      - name: "faxng__c"
+        in: "query"
+        type: "boolean"
+        description: "FAX NG"
+      - name: "email__c"
+        in: "query"
+        type: "string"
+        description: |
+          E-Mail
+          * 照合: 完全一致
+      - name: "emailng__c"
+        in: "query"
+        type: "boolean"
+        description: "Email NG"
+      - name: "website"
+        in: "query"
+        type: "string"
+        description: |
+          サイトURL
+          * 照合: 部分一致
+      - name: "parentid"
+        in: "query"
+        type: "string"
+        description: |
+          親法人ID
+          * 照合: 完全一致
+      - name: "headoffice__c"
+        in: "query"
+        type: "string"
+        description: |
+          本店ID
+          * 照合: 完全一致
+      - name: "foraccountingnotext__c"
+        in: "query"
+        type: "string"
+        description: |
+          経理用No.
+          * 照合: 完全一致
+      - name: "shopnametext__c"
+        in: "query"
+        type: "string"
+        description: |
+          店舗名
+          * 照合: 部分一致
+      - name: "shopkanatext__c"
+        in: "query"
+        type: "string"
+        description: |
+          店舗名カナ
+          * 照合: 部分一致
+      - name: "branchofficename__c"
+        in: "query"
+        type: "string"
+        description: |
+          支店名
+          * 照合: 部分一致
+      - name: "branchofficekana__c"
+        in: "query"
+        type: "string"
+        description: |
+          支店名カナ
+          * 照合: 部分一致
+      - name: "contactng__c"
+        in: "query"
+        type: "boolean"
+        description: "接触NG"
+      - name: "alliancearchitect__c"
+        in: "query"
+        type: "boolean"
+        description: "提携建築家"
+      - name: "affiliates__c"
+        in: "query"
+        type: "boolean"
+        description: "提携法人"
+      - name: "notpayment__c"
+        in: "query"
+        type: "boolean"
+        description: "未入金"
+      - name: "bankruptcy__c"
+        in: "query"
+        type: "boolean"
+        description: "倒産"
+      - name: "is_available_r_de_go__c"
+        in: "query"
+        type: "boolean"
+        description: "RでGo契約"
+      - name: "is_available_cms__c"
+        in: "query"
+        type: "boolean"
+        description: "CMS契約"
+      - name: "is_available_pms__c"
+        in: "query"
+        type: "boolean"
+        description: "PMS契約"
+      - name: "is_available_iekachi__c"
+        in: "query"
+        type: "boolean"
+        description: "iekachi BOX契約"
+      - name: "architrend_rights__c"
+        in: "query"
+        type: "boolean"
+        description: "アーキトレンドCAD権利会員"
+      - name: "is_service_delete__c"
+        in: "query"
+        type: "boolean"
+        description: "サービス削除フラグ"
+      - name: "sfid"
+        in: "query"
+        type: "string"
+        description: |
+          SFID
+          * 照合: 完全一致
+      - name: "createddate"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          作成日
+          * 照合: 完全一致
+      - name: "createddate_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          作成日
+          * 照合: 範囲一致（下限）
+      - name: "createddate_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          作成日
+          * 照合: 範囲一致（上限）
+      - name: "systemmodstamp"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          システム最終更新日
+          * 照合: 完全一致
+      - name: "systemmodstamp_date_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          システム最終更新日
+          * 照合: 範囲一致（下限）
+      - name: "systemmodstamp_date_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          システム最終更新日
+          * 照合: 範囲一致（上限）
+      - name: "created_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ作成サービス
+          * 照合: 完全一致
+      - name: "last_modified_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ更新サービス
+          * 照合: 完全一致
+      - name: "isdeleted"
+        in: "query"
+        type: "boolean"
+        description: "削除フラグ"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Account"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+  /api/accounts/{corporationid__c}:
+    get:
+      tags:
+      - "account"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getAccount"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "corporationid__c"
+        description: "加盟店ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Account"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    put:
+      tags:
+      - "account"
+      security:
+        - app_key: []
+      summary: "更新"
+      description: ""
+      operationId: "updateAccount"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "corporationid__c"
+        description: "加盟店ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Account"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Account"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    delete:
+      tags:
+      - "account"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteAccount"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "corporationid__c"
+        description: "加盟店ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "string"
+                example: "A365795289884528640"
+                description: "加盟店ID"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/contacts:
+    post:
+      tags:
+      - "contact"
+      security:
+        - app_key: []
+      summary: "追加"
+      description: ""
+      operationId: "addContact"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Contact"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Contact"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+    get:
+      tags:
+      - "contact"
+      security:
+        - app_key: []
+      summary: "検索"
+      description: ""
+      operationId: "indexContact"
+      parameters:
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "ページ"
+      - name: "size"
+        in: "query"
+        type: "integer"
+      - name: "contact_id__c"
+        in: "query"
+        type: "string"
+        description: |
+          HPF担当者ID
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "accountid"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店ID(SFID)
+          * 照合: 完全一致
+      - name: "corporationid__c"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店ID
+          * 照合: 完全一致
+      - name: "hpf_permission__c"
+        in: "query"
+        type: "string"
+        description: |
+          HPF権限
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "contact_kind__c"
+        in: "query"
+        type: "string"
+        description: |
+          ユーザー種別
+          * 照合: 完全一致
+      - name: "invalid_reason__c"
+        in: "query"
+        type: "string"
+        description: |
+          無効化コメント
+          * 照合: 部分一致
+      - name: "mailingpostalcode"
+        in: "query"
+        type: "string"
+        description: |
+          郵便番号(法人用)
+          * 照合: 前方一致
+      - name: "mailingstate"
+        in: "query"
+        type: "string"
+        description: |
+          都道府県(法人用)
+          * 照合: 前方一致
+      - name: "mailingcity"
+        in: "query"
+        type: "string"
+        description: |
+          市区郡(法人用)
+          * 照合: 前方一致
+      - name: "mailingstreet"
+        in: "query"
+        type: "string"
+        description: |
+          町名・番地(法人用)
+          * 照合: 部分一致
+      - name: "buildingname__c"
+        in: "query"
+        type: "string"
+        description: |
+          ビル・マンション名(法人用)
+          * 照合: 部分一致
+      - name: "firstname"
+        in: "query"
+        type: "string"
+        description: |
+          名
+          * 照合: 部分一致
+      - name: "lastname"
+        in: "query"
+        type: "string"
+        description: |
+          氏
+          * 照合: 部分一致
+      - name: "firstnamekana__c"
+        in: "query"
+        type: "string"
+        description: |
+          名カナ
+          * 照合: 部分一致
+      - name: "lastnamekana__c"
+        in: "query"
+        type: "string"
+        description: |
+          氏カナ
+          * 照合: 部分一致
+      - name: "title"
+        in: "query"
+        type: "string"
+        description: |
+          役職
+          * 照合: 部分一致
+      - name: "belongbranchoffice__c"
+        in: "query"
+        type: "string"
+        description: |
+          所属支店
+          * 照合: 部分一致
+      - name: "department"
+        in: "query"
+        type: "string"
+        description: |
+          部署
+          * 照合: 部分一致
+      - name: "phone"
+        in: "query"
+        type: "string"
+        description: |
+          TEL
+          * 照合: 部分一致
+      - name: "donotcall"
+        in: "query"
+        type: "boolean"
+        description: "TEL NG"
+      - name: "fax"
+        in: "query"
+        type: "string"
+        description: |
+          Fax
+          * 照合: 部分一致
+      - name: "hasoptedoutoffax"
+        in: "query"
+        type: "boolean"
+        description: "FAX NG"
+      - name: "email"
+        in: "query"
+        type: "string"
+        description: |
+          Email
+          * 照合: 部分一致
+      - name: "hasoptedoutofemail"
+        in: "query"
+        type: "boolean"
+        description: "Email NG"
+      - name: "mobilephone"
+        in: "query"
+        type: "string"
+        description: |
+          携帯TEL
+          * 照合: 部分一致
+      - name: "mobilephoneng__c"
+        in: "query"
+        type: "boolean"
+        description: "携帯TEL NG"
+      - name: "mobilemail__c"
+        in: "query"
+        type: "string"
+        description: |
+          携帯Email
+          * 照合: 部分一致
+      - name: "mobilemailng__c"
+        in: "query"
+        type: "boolean"
+        description: "携帯Email NG"
+      - name: "representativename__c"
+        in: "query"
+        type: "boolean"
+        description: "代表者"
+      - name: "retirement__c"
+        in: "query"
+        type: "boolean"
+        description: "退職"
+      - name: "plaza__c"
+        in: "query"
+        type: "boolean"
+        description: "PLAZA"
+      - name: "plazamail__c"
+        in: "query"
+        type: "boolean"
+        description: "PLAZAメール"
+      - name: "view__c"
+        in: "query"
+        type: "boolean"
+        description: "View"
+      - name: "viewmail__c"
+        in: "query"
+        type: "boolean"
+        description: "Viewメール"
+      - name: "role_of_r_de_go__c"
+        in: "query"
+        type: "string"
+        description: |
+          RでGo利用権限
+          * 照合: 完全一致
+      - name: "role_of_cms__c"
+        in: "query"
+        type: "string"
+        description: |
+          CMS利用権限
+          * 照合: 完全一致
+      - name: "role_of_pms__c"
+        in: "query"
+        type: "string"
+        description: |
+          PMS利用権限
+          * 照合: 完全一致
+      - name: "role_of_iekachi__c"
+        in: "query"
+        type: "string"
+        description: |
+          iekachi BOX利用権限
+          * 照合: 完全一致
+      - name: "r_house_certificate_number__c"
+        in: "query"
+        type: "string"
+        description: |
+          R+house施工責任者修了証番号
+          * 照合: 完全一致
+      - name: "r_house_construction_supervisor__c"
+        in: "query"
+        type: "string"
+        description: |
+          R+house施工責任者区分
+          * 照合: 完全一致
+      - name: "r_house_certificate_remove__c"
+        in: "query"
+        type: "string"
+        description: |
+          R+house施工責任者認定削除
+          * 照合: 完全一致
+      - name: "is_service_delete__c"
+        in: "query"
+        type: "boolean"
+        description: "サービス削除フラグ"
+      - name: "createddate"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          作成日
+          * 照合: 完全一致
+      - name: "createddate_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          作成日
+          * 照合: 範囲一致（下限）
+      - name: "createddate_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          作成日
+          * 照合: 範囲一致（上限）
+      - name: "systemmodstamp"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          システム最終更新日
+          * 照合: 完全一致
+      - name: "systemmodstamp_date_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          システム最終更新日
+          * 照合: 範囲一致（下限）
+      - name: "systemmodstamp_date_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          システム最終更新日
+          * 照合: 範囲一致（上限）
+      - name: "created_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ作成サービス
+          * 照合: 完全一致
+      - name: "last_modified_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ更新サービス
+          * 照合: 完全一致
+      - name: "isdeleted"
+        in: "query"
+        type: "boolean"
+        description: "削除フラグ"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Contact"
+  /api/contacts/{contact_id__c}:
+    get:
+      tags:
+      - "contact"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getContact"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "contact_id__c"
+        description: "担当者ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Contact"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    put:
+      tags:
+      - "contact"
+      security:
+        - app_key: []
+      summary: "更新"
+      description: ""
+      operationId: "updateContact"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "contact_id__c"
+        description: "担当者ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Contact"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Contact"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    delete:
+      tags:
+      - "contact"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteContact"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "contact_id__c"
+        description: "担当者ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "string"
+                example: "C365811511187480576"
+                description: "担当者ID"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/owners:
+    post:
+      tags:
+      - "owner"
+      security:
+        - app_key: []
+      summary: "追加"
+      description: ""
+      operationId: "addOwner"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Owner"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Owner"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+    get:
+      tags:
+      - "owner"
+      security:
+        - app_key: []
+      summary: "検索"
+      description: ""
+      operationId: "indexOwner"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "ページ"
+      - name: "size"
+        in: "query"
+        type: "integer"
+        description: "取得件数"
+      - name: "owner_id__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナーID
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "corporation_id__c"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店ID
+          * 照合: 完全一致
+      - name: "account_id__c"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店ID(SFID)
+          * 照合: 完全一致
+      - name: "last_name__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー姓
+          * 照合: 部分一致
+      - name: "first_name__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー名
+          * 照合: 部分一致
+      - name: "last_name_kana__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー姓カナ
+          * 照合: 部分一致
+      - name: "first_name_kana__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー名カナ
+          * 照合: 部分一致
+      - name: "owner_company_name__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー法人
+          * 照合: 部分一致
+      - name: "owner_company_name_kana__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー法人カナ
+          * 照合: 部分一致
+      - name: "birthdate__c"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          生年月日
+          * 照合: 完全一致
+      - name: "email1__c"
+        in: "query"
+        type: "string"
+        description: |
+          Email1
+          * 照合: 部分一致
+      - name: "email2__c"
+        in: "query"
+        type: "string"
+        description: |
+          Email2
+          * 照合: 部分一致
+      - name: "tel1__c"
+        in: "query"
+        type: "string"
+        description: |
+          電話番号1
+          * 照合: 部分一致
+      - name: "tel2__c"
+        in: "query"
+        type: "string"
+        description: |
+          電話番号2
+          * 照合: 部分一致
+      - name: "fax__c"
+        in: "query"
+        type: "string"
+        description: |
+          FAX
+          * 照合: 部分一致
+      - name: "postal_code__c"
+        in: "query"
+        type: "string"
+        description: |
+          郵便番号
+          * 照合: 前方一致
+      - name: "prefecture__c"
+        in: "query"
+        type: "string"
+        description: |
+          都道府県
+          * 照合: 前方一致
+      - name: "city__c"
+        in: "query"
+        type: "string"
+        description: |
+          市町村名
+          * 照合: 前方一致
+      - name: "street__c"
+        in: "query"
+        type: "string"
+        description: |
+          町名・地番など
+          * 照合: 部分一致
+      - name: "building_name__c"
+        in: "query"
+        type: "string"
+        description: |
+          ビル・マンション名
+          * 照合: 部分一致
+      - name: "address_kana__c"
+        in: "query"
+        type: "string"
+        description: |
+          住所カナ
+          * 照合: 部分一致
+      - name: "owner_type__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナー種別
+          * 照合: 完全一致
+      - name: "owner_rank__c"
+        in: "query"
+        type: "string"
+        description: |
+          オーナーランク
+          * 照合: 完全一致
+      - name: "sex__c"
+        in: "query"
+        type: "string"
+        description: |
+          性別
+          * 照合: 完全一致
+      - name: "job__c"
+        in: "query"
+        type: "string"
+        description: |
+          職業
+          * 照合: 部分一致
+      - name: "income__c"
+        in: "query"
+        type: "string"
+        description: |
+          所得
+          * 照合: 部分一致
+      - name: "representative__c"
+        in: "query"
+        type: "string"
+        description: |
+          代表者名
+          * 照合: 部分一致
+      - name: "representative_kana__c"
+        in: "query"
+        type: "string"
+        description: |
+          代表者名カナ
+          * 照合: 部分一致
+      - name: "industry__c"
+        in: "query"
+        type: "string"
+        description: |
+          業種
+          * 照合: 部分一致
+      - name: "capital__c"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          資本金
+          * 照合: 完全一致
+      - name: "capital__c_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          資本金
+          * 照合: 範囲一致（下限）
+      - name: "capital__c_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          資本金
+          * 照合: 範囲一致（上限）
+      - name: "annual_revenue__c"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          売上高
+          * 照合: 完全一致
+      - name: "annual_revenue__c_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          売上高
+          * 照合: 範囲一致（下限）
+      - name: "annual_revenue__c_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          売上高
+          * 照合: 範囲一致（上限）
+      - name: "branch__c"
+        in: "query"
+        type: "string"
+        description: |
+          事業所
+          * 照合: 部分一致
+      - name: "number_of_employees__c"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          従業員数
+          * 照合: 完全一致
+      - name: "number_of_employees__c_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          従業員数
+          * 照合: 範囲一致（下限）
+      - name: "number_of_employees__c_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          従業員数
+          * 照合: 範囲一致（上限）
+      - name: "login_name__c"
+        in: "query"
+        type: "string"
+        description: |
+          ログインユーザー名
+          * 照合: 完全一致
+      - name: "created_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ作成サービス
+          * 照合: 完全一致
+      - name: "last_modified_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ更新サービス
+          * 照合: 完全一致
+      - name: "isdeleted"
+        in: "query"
+        type: "boolean"
+        description: "削除フラグ"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Owner"
+  /api/owners/{owner_id__c}:
+    get:
+      tags:
+      - "owner"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getOwner"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "owner_id__c"
+        description: "オーナーID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Owner"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    put:
+      tags:
+      - "owner"
+      security:
+        - app_key: []
+      summary: "更新"
+      description: ""
+      operationId: "updateOwner"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "owner_id__c"
+        description: "オーナーID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Owner"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Owner"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    delete:
+      tags:
+      - "owner"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteOwner"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "owner_id__c"
+        description: "オーナーID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "string"
+                example: "W366477791452213248"
+                description: "オーナーID"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/owners/login:
+    post:
+      tags:
+      - "owner"
+      summary: "オーナーログイン"
+      description: ""
+      operationId: "loginOwner"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "owner_user_name"
+        description: "オーナーログイン名"
+        required: true
+        type: "string"
+      - in: "query"
+        name: "password"
+        description: "オーナーログインパスワード"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                $ref: "#/definitions/OwnerAuthResponse"
+        401:
+          description: "authoraize error"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "failure"
+              error_message:
+                type: "string"
+                example: "認証情報に誤りがあります[AuthorizeException]"
+              error_kind:
+                type: "string"
+                example: "request-error"
+              error_detail:
+                type: "string"
+                example: "owner not found."
+  /api/users/sfid/{sfid}:
+    get:
+      tags:
+      - "user"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "sfid"
+        description: "SFID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/projects:
+    post:
+      tags:
+      - "project"
+      security:
+        - app_key: []
+      summary: "追加"
+      description: ""
+      operationId: "addProject"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Project"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Project"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+    get:
+      tags:
+      - "project"
+      security:
+        - app_key: []
+      summary: "検索"
+      description: ""
+      operationId: "indexProject"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "ページ"
+      - name: "size"
+        in: "query"
+        type: "integer"
+        description: "取得件数"
+      - name: "project_id"
+        in: "query"
+        type: "string"
+        description: |
+          案件ID
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "property_id"
+        in: "query"
+        type: "string"
+        description: |
+          物件ID
+          * 照合: 完全一致
+      - name: "name"
+        in: "query"
+        type: "string"
+        description: |
+          案件名
+          * 照合: 部分一致
+      - name: "kind"
+        in: "query"
+        type: "integer"
+        description: |
+          案件種別
+          * 照合: 完全一致
+      - name: "construction_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          着工日
+          * 照合: 完全一致
+      - name: "construction_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          着工日
+          * 照合: 範囲一致（下限）
+      - name: "construction_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          着工日
+          * 照合: 範囲一致（上限）
+      - name: "completion_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          竣工日
+          * 照合: 完全一致
+      - name: "completion_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          竣工日
+          * 照合: 範囲一致（下限）
+      - name: "completion_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          竣工日
+          * 照合: 範囲一致（上限）
+      - name: "delivery_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          引渡日
+          * 照合: 完全一致
+      - name: "delivery_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          引渡日
+          * 照合: 範囲一致（下限）
+      - name: "delivery_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          引渡日
+          * 照合: 範囲一致（上限）
+      - name: "contract_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          契約日
+          * 照合: 完全一致
+      - name: "contract_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          契約日
+          * 照合: 範囲一致（下限）
+      - name: "contract_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          契約日
+          * 照合: 範囲一致（上限）
+      - name: "framework_completion_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          上棟日
+          * 照合: 完全一致
+      - name: "framework_completion_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          上棟日
+          * 照合: 範囲一致（下限）
+      - name: "framework_completion_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          上棟日
+          * 照合: 範囲一致（上限）
+      - name: "scheduled_construction_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          着工予定日
+          * 照合: 完全一致
+      - name: "scheduled_construction_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          着工予定日
+          * 照合: 範囲一致（下限）
+      - name: "scheduled_construction_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          着工予定日
+          * 照合: 範囲一致（上限）
+      - name: "construction_schedule_comment"
+        in: "query"
+        type: "string"
+        description: |
+          着工予定コメント
+          * 照合: 部分一致
+      - name: "construction_undecided_flg"
+        in: "query"
+        type: "boolean"
+        description: |
+          着工予定未定
+          * 照合: 完全一致
+      - name: "contract_amount"
+        in: "query"
+        type: "integer"
+        description: |
+          受注金額
+          * 照合: 完全一致
+      - name: "sales_person"
+        in: "query"
+        type: "string"
+        description: |
+          営業担当者
+          * 照合: 部分一致
+      - name: "work_person"
+        in: "query"
+        type: "string"
+        description: |
+          工事担当者
+          * 照合: 部分一致
+      - name: "first_periodic_inspection_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（1回目）
+          * 照合: 完全一致
+      - name: "first_periodic_inspection_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（1回目）
+          * 照合: 範囲一致（下限）
+      - name: "first_periodic_inspection_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（1回目）
+          * 照合: 範囲一致（上限）
+      - name: "second_periodic_inspection_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（2回目）
+          * 照合: 完全一致
+      - name: "second_periodic_inspection_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（2回目）
+          * 照合: 範囲一致（下限）
+      - name: "second_periodic_inspection_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（2回目）
+          * 照合: 範囲一致（上限）
+      - name: "third_periodic_inspection_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（3回目）
+          * 照合: 完全一致
+      - name: "third_periodic_inspection_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（3回目）
+          * 照合: 範囲一致（下限）
+      - name: "third_periodic_inspection_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（3回目）
+          * 照合: 範囲一致（上限）
+      - name: "fourth_periodic_inspection_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（4回目）
+          * 照合: 完全一致
+      - name: "fourth_periodic_inspection_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（4回目）
+          * 照合: 範囲一致（下限）
+      - name: "fourth_periodic_inspection_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          定期点検日（4回目）
+          * 照合: 範囲一致（上限）
+      - name: "client_name"
+        in: "query"
+        type: "string"
+        description: |
+          施主名
+          * 照合: 部分一致
+      - name: "client_name_kana"
+        in: "query"
+        type: "string"
+        description: |
+          施主フリガナ
+          * 照合: 部分一致
+      - name: "client_postal_code"
+        in: "query"
+        type: "string"
+        description: |
+          施主営業後郵便番号
+          * 照合: 前方一致
+      - name: "client_prefecture"
+        in: "query"
+        type: "string"
+        description: |
+          施主営業後都道府県
+          * 照合: 前方一致
+      - name: "client_city"
+        in: "query"
+        type: "string"
+        description: |
+          施主営業後市区町村
+          * 照合: 部分一致
+      - name: "client_address"
+        in: "query"
+        type: "string"
+        description: |
+          施主営業後番地
+          * 照合: 部分一致
+      - name: "client_building_name"
+        in: "query"
+        type: "string"
+        description: |
+          施主営業後ビル名
+          * 照合: 部分一致
+      - name: "client_address_kana"
+        in: "query"
+        type: "string"
+        description: |
+          施主営業後住所フリガナ
+          * 照合: 部分一致
+      - name: "client_email"
+        in: "query"
+        type: "string"
+        description: |
+          施主EMAIL
+          * 照合: 部分一致
+      - name: "client_fax"
+        in: "query"
+        type: "string"
+        description: |
+          施主FAX
+          * 照合: 部分一致
+      - name: "client_tel"
+        in: "query"
+        type: "string"
+        description: |
+          施主電話
+          * 照合: 部分一致
+      - name: "client_postal_code_am"
+        in: "query"
+        type: "string"
+        description: |
+          施主入居後郵便番号
+          * 照合: 前方一致
+      - name: "client_prefecture_am"
+        in: "query"
+        type: "string"
+        description: |
+          施主入居後都道府県
+          * 照合: 前方一致
+      - name: "client_city_am"
+        in: "query"
+        type: "string"
+        description: |
+          施主入居後市区町村
+          * 照合: 部分一致
+      - name: "client_address_am"
+        in: "query"
+        type: "string"
+        description: |
+          施主入居後番地
+          * 照合: 部分一致
+      - name: "client_building_name_am"
+        in: "query"
+        type: "string"
+        description: |
+          施主入居後ビル名
+          * 照合: 部分一致
+      - name: "client_tel_am"
+        in: "query"
+        type: "string"
+        description: |
+          施主入居後電話番号
+          * 照合: 部分一致
+      - name: "client_family_structure"
+        in: "query"
+        type: "string"
+        description: |
+          施主家族構成
+          * 照合: 部分一致
+      - name: "client_annual_income"
+        in: "query"
+        type: "string"
+        description: |
+          施主年収
+          * 照合: 部分一致
+      - name: "maintenance_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          メンテナンス日付
+          * 照合: 完全一致
+      - name: "maintenance_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          メンテナンス日付
+          * 照合: 範囲一致（下限）
+      - name: "maintenance_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          メンテナンス日付
+          * 照合: 範囲一致（上限）
+      - name: "maintenance_supplier_name"
+        in: "query"
+        type: "string"
+        description: |
+          メンテナンス業者名
+          * 照合: 部分一致
+      - name: "maintenance_classification"
+        in: "query"
+        type: "string"
+        description: |
+          メンテナンス区分
+          * 照合: 部分一致
+      - name: "maintenance_remarks"
+        in: "query"
+        type: "string"
+        description: |
+          メンテナンス備考
+          * 照合: 部分一致
+      - name: "maintenance_memo"
+        in: "query"
+        type: "string"
+        description: |
+          メンテナンスメモ
+          * 照合: 部分一致
+      - name: "created_at"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 完全一致
+      - name: "created_at_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 範囲一致（下限）
+      - name: "created_at_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 範囲一致（上限）
+      - name: "updated_at"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          更新日
+          * 照合: 完全一致
+      - name: "updated_at_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          更新日
+          * 照合: 範囲一致（下限）
+      - name: "updated_at_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          更新日
+          * 照合: 範囲一致（上限）
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Project"
+  /api/projects/{project_id}:
+    get:
+      tags:
+      - "project"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getProject"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "project_id"
+        description: "プロジェクトID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Project"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    put:
+      tags:
+      - "project"
+      security:
+        - app_key: []
+      summary: "更新"
+      description: ""
+      operationId: "updateProject"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "project_id"
+        description: "プロジェクトID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Project"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Project"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    delete:
+      tags:
+      - "project"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteProject"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "project_id"
+        description: "プロジェクトID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "string"
+                example: "J366522760141516800"
+                description: "プロジェクトID"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/properties:
+    post:
+      tags:
+      - "property"
+      security:
+        - app_key: []
+      summary: "追加"
+      description: ""
+      operationId: "addProperty"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Property"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Property"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+    get:
+      tags:
+      - "property"
+      security:
+        - app_key: []
+      summary: "検索"
+      description: ""
+      operationId: "indexProperty"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "ページ"
+      - name: "size"
+        in: "query"
+        type: "integer"
+        description: "取得件数"
+      - name: "property_id"
+        in: "query"
+        type: "string"
+        description: |
+          物件ID
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "corporation_id"
+        in: "query"
+        type: "string"
+        description: |
+          加盟店ID
+          * 照合: 完全一致
+      - name: "owner_id"
+        in: "query"
+        type: "string"
+        description: |
+          オーナーID
+          * 照合: 完全一致
+      - name: "joint_name"
+        in: "query"
+        type: "string"
+        description: |
+          連名
+          * 照合: 部分一致
+      - name: "joint_name_kana"
+        in: "query"
+        type: "string"
+        description: |
+          連名カナ
+          * 照合: 部分一致
+      - name: "architect_corporation_id"
+        in: "query"
+        type: "string"
+        description: |
+          建築家加盟店ID
+          * 照合: 完全一致
+      - name: "ic_corporation_id"
+        in: "query"
+        type: "string"
+        description: |
+          IC加盟店ID
+          * 照合: 完全一致
+      - name: "ic_supervisor_corporation_id"
+        in: "query"
+        type: "string"
+        description: |
+          IC監修者加盟店ID
+          * 照合: 完全一致
+      - name: "name"
+        in: "query"
+        type: "string"
+        description: |
+          物件名
+          * 照合: 部分一致
+      - name: "name_kana"
+        in: "query"
+        type: "string"
+        description: |
+          物件名カナ
+          * 照合: 部分一致
+      - name: "kind"
+        in: "query"
+        type: "integer"
+        description: |
+          物件種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "parent_id"
+        in: "query"
+        type: "string"
+        description: |
+          親物件ID
+          * 照合: 完全一致
+      - name: "postal_code"
+        in: "query"
+        type: "string"
+        description: |
+          郵便番号
+          * 照合: 前方一致
+      - name: "prefecture"
+        in: "query"
+        type: "string"
+        description: |
+          都道府県
+          * 照合: 部分一致
+      - name: "city"
+        in: "query"
+        type: "string"
+        description: |
+          市町村
+          * 照合: 部分一致
+      - name: "address"
+        in: "query"
+        type: "string"
+        description: |
+          町名以下
+          * 照合: 部分一致
+      - name: "longitude"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          経度
+          * 照合: 完全一致
+      - name: "longitude_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          経度
+          * 照合: 範囲一致（下限）
+      - name: "longitude_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          経度
+          * 照合: 範囲一致（上限）
+      - name: "latitude"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          緯度
+          * 照合: 完全一致
+      - name: "latitude_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          緯度
+          * 照合: 範囲一致（下限）
+      - name: "latitude_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          緯度
+          * 照合: 範囲一致（上限）
+      - name: "status"
+        in: "query"
+        type: "string"
+        description: |
+          物件状態
+          * 照合: 部分一致
+      - name: "site_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          敷地面積
+          * 照合: 完全一致
+      - name: "site_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          敷地面積
+          * 照合: 範囲一致（下限）
+      - name: "site_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          敷地面積
+          * 照合: 範囲一致（上限）
+      - name: "building_coverage_ratio"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          建ぺい率
+          * 照合: 完全一致
+      - name: "building_coverage_ratio_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          建ぺい率
+          * 照合: 範囲一致（下限）
+      - name: "building_coverage_ratio_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          建ぺい率
+          * 照合: 範囲一致（上限）
+      - name: "floor_area_ratio"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          容積率
+          * 照合: 完全一致
+      - name: "floor_area_ratio_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          容積率
+          * 照合: 範囲一致（下限）
+      - name: "floor_area_ratio_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          容積率
+          * 照合: 範囲一致（上限）
+      - name: "right"
+        in: "query"
+        type: "integer"
+        description: |
+          土地権利
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "adjacent_road"
+        in: "query"
+        type: "string"
+        description: |
+          接道情報
+          * 照合: 部分一致
+      - name: "building_name"
+        in: "query"
+        type: "string"
+        description: |
+          建物名
+          * 照合: 部分一致
+      - name: "floors_above_ground"
+        in: "query"
+        type: "integer"
+        description: |
+          地上階数
+          * 照合: 完全一致
+      - name: "floors_below_ground"
+        in: "query"
+        type: "integer"
+        description: |
+          地下階数
+          * 照合: 完全一致
+      - name: "building_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          建築面積
+          * 照合: 完全一致
+      - name: "building_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          建築面積
+          * 照合: 範囲一致（下限）
+      - name: "building_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          建築面積
+          * 照合: 範囲一致（上限）
+      - name: "total_floor_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          延床面積
+          * 照合: 完全一致
+      - name: "total_floor_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          延床面積
+          * 照合: 範囲一致（下限）
+      - name: "total_floor_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          延床面積
+          * 照合: 範囲一致（上限）
+      - name: "each_floor_area"
+        in: "query"
+        type: "string"
+        description: |
+          各階床面積
+          * 照合: 部分一致
+      - name: "eaves_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          軒面積
+          * 照合: 完全一致
+      - name: "eaves_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          軒面積
+          * 照合: 範囲一致（下限）
+      - name: "eaves_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          軒面積
+          * 照合: 範囲一致（上限）
+      - name: "roof_slope"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          屋根勾配
+          * 照合: 完全一致
+      - name: "roof_slope_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          屋根勾配
+          * 照合: 範囲一致（下限）
+      - name: "roof_slope_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          屋根勾配
+          * 照合: 範囲一致（上限）
+      - name: "outer_perimeter"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          外周全長
+          * 照合: 完全一致
+      - name: "outer_perimeter_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          外周全長
+          * 照合: 範囲一致（下限）
+      - name: "outer_perimeter_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          外周全長
+          * 照合: 範囲一致（上限）
+      - name: "veranda_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          ベランダ面積
+          * 照合: 完全一致
+      - name: "veranda_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          ベランダ面積
+          * 照合: 範囲一致（下限）
+      - name: "veranda_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          ベランダ面積
+          * 照合: 範囲一致（上限）
+      - name: "internal_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          内壁面積
+          * 照合: 完全一致
+      - name: "internal_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          内壁面積
+          * 照合: 範囲一致（下限）
+      - name: "internal_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          内壁面積
+          * 照合: 範囲一致（上限）
+      - name: "statutory_floor_area"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          法定床面積
+          * 照合: 完全一致
+      - name: "statutory_floor_area_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          法定床面積
+          * 照合: 範囲一致（下限）
+      - name: "statutory_floor_area_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          法定床面積
+          * 照合: 範囲一致（上限）
+      - name: "construction_method"
+        in: "query"
+        type: "string"
+        description: |
+          工法
+          * 照合: 部分一致
+      - name: "construction"
+        in: "query"
+        type: "integer"
+        description: |
+          構造
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "building_kind"
+        in: "query"
+        type: "integer"
+        description: |
+          種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "rooms"
+        in: "query"
+        type: "integer"
+        description: |
+          部屋数
+          * 照合: 完全一致
+      - name: "layout"
+        in: "query"
+        type: "integer"
+        description: |
+          部屋種類
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "use"
+        in: "query"
+        type: "integer"
+        description: |
+          用途
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "building_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          建築年月日
+          * 照合: 完全一致
+      - name: "building_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          建築年月日
+          * 照合: 範囲一致（下限）
+      - name: "building_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          建築年月日
+          * 照合: 範囲一致（上限）
+      - name: "confirmation_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          建築確認年月日
+          * 照合: 完全一致
+      - name: "confirmation_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          建築確認年月日
+          * 照合: 範囲一致（下限）
+      - name: "confirmation_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          建築確認年月日
+          * 照合: 範囲一致（上限）
+      - name: "last_renovation_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          前回大規模修繕年月日
+          * 照合: 完全一致
+      - name: "last_renovation_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          前回大規模修繕年月日
+          * 照合: 範囲一致（下限）
+      - name: "last_renovation_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          前回大規模修繕年月日
+          * 照合: 範囲一致（上限）
+      - name: "foundation_structure"
+        in: "query"
+        type: "integer"
+        description: |
+          基礎構造
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "outer_wall_kind"
+        in: "query"
+        type: "integer"
+        description: |
+          外壁種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "roof_kind"
+        in: "query"
+        type: "integer"
+        description: |
+          屋根種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "veranda_waterproof_kind"
+        in: "query"
+        type: "integer"
+        description: |
+          ベランダ防水種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "bathroom_kind"
+        in: "query"
+        type: "integer"
+        description: |
+          浴室種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "wc_kind"
+        in: "query"
+        type: "integer"
+        description: |
+          WC種別
+          * 照合: 完全一致
+          * 複数指定可(OR検索)
+      - name: "is_sixty_years"
+        in: "query"
+        type: "boolean"
+        description: "60年フラグ"
+      - name: "c_value"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          C値
+          * 照合: 完全一致
+      - name: "c_value_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          C値
+          * 照合: 範囲一致（下限）
+      - name: "c_value_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          C値
+          * 照合: 範囲一致（上限）
+      - name: "ua_value"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          UA値
+          * 照合: 完全一致
+      - name: "ua_value_from"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          UA値
+          * 照合: 範囲一致（下限）
+      - name: "ua_value_to"
+        in: "query"
+        type: "number"
+        format: "double"
+        description: |
+          UA値
+          * 照合: 範囲一致（上限）
+      - name: "is_r_plus_panel"
+        in: "query"
+        type: "boolean"
+        description: "R+パネル"
+      - name: "r_plus_panel_order_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          R+パネル発注日
+          * 照合: 完全一致
+      - name: "r_plus_panel_order_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          R+パネル発注日
+          * 照合: 範囲一致（下限）
+      - name: "r_plus_panel_order_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          R+パネル発注日
+          * 照合: 範囲一致（上限）
+      - name: "r_plus_panel_delivery_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          R+パネル納品日
+          * 照合: 完全一致
+      - name: "r_plus_panel_delivery_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          R+パネル納品日
+          * 照合: 範囲一致（下限）
+      - name: "r_plus_panel_delivery_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          R+パネル納品日
+          * 照合: 範囲一致（上限）
+      - name: "registration_date"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          登記日
+          * 照合: 完全一致
+      - name: "registration_date_from"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          登記日
+          * 照合: 範囲一致（下限）
+      - name: "registration_date_to"
+        in: "query"
+        type: "string"
+        format: "date"
+        description: |
+          登記日
+          * 照合: 範囲一致（上限）
+      - name: "created_at"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 完全一致
+      - name: "created_at_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 範囲一致（下限）
+      - name: "created_at_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 範囲一致（上限）
+      - name: "updated_at"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          更新日
+          * 照合: 完全一致
+      - name: "updated_at_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          更新日
+          * 照合: 範囲一致（下限）
+      - name: "updated_at_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          更新日
+          * 照合: 範囲一致（上限）
+      - name: "created_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ作成サービス
+          * 照合: 完全一致
+      - name: "last_modified_by_service__c"
+        in: "query"
+        type: "string"
+        description: |
+          データ更新サービス
+          * 照合: 完全一致
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Property"
+  /api/properties/{property_id}:
+    get:
+      tags:
+      - "property"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getProperty"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "property_id"
+        description: "物件ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Property"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    put:
+      tags:
+      - "property"
+      security:
+        - app_key: []
+      summary: "更新"
+      description: ""
+      operationId: "updateProperty"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "property_id"
+        description: "物件ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/Property"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/Property"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    delete:
+      tags:
+      - "property"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteProperty"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "property_id"
+        description: "物件ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "string"
+                example: "F365466934274473984"
+                description: "物件ID"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/fileinfo:
+    post:
+      tags:
+      - "fileinfo"
+      security:
+        - app_key: []
+      summary: "追加"
+      description: ""
+      operationId: "addFileInfo"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FileInfo"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/FileInfo"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+    get:
+      tags:
+      - "fileinfo"
+      security:
+        - app_key: []
+      summary: "検索"
+      description: ""
+      operationId: "indexFileInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "page"
+        in: "query"
+        type: "integer"
+        description: "ページ"
+      - name: "size"
+        in: "query"
+        type: "integer"
+        description: "取得件数"
+      - in: "query"
+        name: "fileinfo_id"
+        type: "string"
+        description: |
+          ファイル情報管理ID
+          * 照合: 完全一致
+      - in: "query"
+        name: "user_id"
+        type: "string"
+        description: |
+          アップロードユーザーID
+          * 照合: 完全一致
+      - in: "query"
+        name: "corporation_id"
+        type: "string"
+        description: |
+          加盟店ID
+          * 照合: 完全一致
+      - in: "query"
+        name: "kind_tag"
+        type: "string"
+        description: |
+          情報種別タグ
+          * 照合: 完全一致
+      - in: "query"
+        name: "key_id"
+        type: "string"
+        description: |
+          キーID
+          * 照合: 完全一致
+      - in: "query"
+        name: "object_key"
+        type: "string"
+        description: |
+          オブジェクトキー
+          * 照合: 完全一致
+      - in: "query"
+        name: "filename"
+        type: "string"
+        description: |
+          ファイル名
+          * 照合: 部分一致
+      - in: "query"
+        name: "scope"
+        type: "integer"
+        description: "アクセス範囲"
+      - in: "query"
+        name: "tags"
+        type: "string"
+        description: |
+          タグ(カンマ区切り)
+          ex) file1,file2,file3
+          各タグはtag01からtag10までのOR検索
+          タグごとの結合はAND検索
+          * 照合: 完全一致 （各タグごとの照合）
+      - in: "query"
+        name: "extension"
+        type: "string"
+        description: |
+          拡張子
+          * 照合: 完全一致
+      - in: "query"
+        name: "file_size"
+        type: "integer"
+        description: "ファイルサイズ"
+      - name: "created_at"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 完全一致
+      - name: "created_at_from"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 範囲一致（下限）
+      - name: "created_at_to"
+        in: "query"
+        type: "string"
+        format: "date-time"
+        description: |
+          登録日
+          * 照合: 範囲一致（上限）
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                type: "array"
+                items:
+                  $ref: "#/definitions/FileInfo"
+  /api/fileinfo/{fileinfo_id}:
+    get:
+      tags:
+      - "fileinfo"
+      security:
+        - app_key: []
+      summary: "取得"
+      description: ""
+      operationId: "getFileInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "fileinfo_id"
+        description: "ファイル情報管理ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/FileInfo"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    put:
+      tags:
+      - "fileinfo"
+      security:
+        - app_key: []
+      summary: "更新"
+      description: ""
+      operationId: "updateFileInfo"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "fileinfo_id"
+        description: "ファイル情報管理ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/FileInfo"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                $ref: "#/definitions/FileInfo"
+        400:
+          description: |
+            request parameter error.
+            表示の例は入力チェックでエラーになった場合のもの。
+            JSON形式に問題がある、または、パラメータの型が間違っている場合は BadRequestJsonParseErrorResponse モデルを参照のこと。
+          schema:
+            $ref: "#/definitions/BadRequestValidationErrorResponse"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+    delete:
+      tags:
+      - "fileinfo"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteFileInfo"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "fileinfo_id"
+        description: "ファイル情報管理ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "string"
+                example: "F365466934274473984"
+                description: "ファイル情報管理ID"
+        404:
+          description: "data not found"
+          schema:
+            $ref: "#/definitions/NotFoundErrorResponse"
+  /api/auth:
+    get:
+      tags:
+      - "auth"
+      summary: "認可状態取得"
+      description: ""
+      operationId: "getAuth"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "token"
+        description: "認証トークン"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                default: "success"
+              response_body:
+                $ref: "#/definitions/AuthResponse"
+        400:
+          description: "request parameter error"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "failure"
+              error_message:
+                type: "string"
+                example: "パラメータ(トークン)が未指定です"
+              error_kind:
+                type: "string"
+                example: "request-error"
+        401:
+          description: "authoraize error"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "failure"
+              error_message:
+                type: "string"
+                example: "SAML情報不備:userId値が存在しません"
+              error_kind:
+                type: "string"
+                example: "system-error"
+  /storage/upload:
+    post:
+      tags:
+      - "file"
+      security:
+        - app_key: []
+      summary: "アップロードURL取得"
+      description: ""
+      operationId: "uploadFile"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "object"
+                properties:
+                  object_key:
+                    type: "string"
+                    example: "hpf-storage/AWS357406450283565056"
+                    description: "オブジェクトキー"
+                  expire:
+                    type: "integer"
+                    example: 1536842344459
+                    description: "有効期限"
+                  expire_info:
+                    type: "string"
+                    example: "Thu Sep 13 21:39:04 JST 2018"
+                    description: "有効期限"
+                  upload_url:
+                    type: "string"
+                    example: "https://..."
+                    description: "アップロードURL"
+  /storage/download:
+    post:
+      tags:
+      - "file"
+      security:
+        - app_key: []
+      summary: "ダウンロードURL取得"
+      description: ""
+      operationId: "downloadFile"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            object_key:
+              type: "string"
+              example: "hpf-storage/AWS357406450283565056"
+              description: "オブジェクトキー"
+            filename:
+              type: "string"
+              example: "file.txt"
+              description: "ダウンロード時ファイル名"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "object"
+                properties:
+                  object_key:
+                    type: "string"
+                    example: "hpf-storage/AWS357406450283565056"
+                    description: "オブジェクトキー"
+                  expire:
+                    type: "integer"
+                    example: 1536842344459
+                    description: "有効期限"
+                  expire_info:
+                    type: "string"
+                    example: "Thu Sep 13 21:39:04 JST 2018"
+                    description: "有効期限"
+                  download_url:
+                    type: "string"
+                    example: "https://..."
+                    description: "ダウンロードURL"
+  /storage/delete:
+    post:
+      tags:
+      - "file"
+      security:
+        - app_key: []
+      summary: "削除"
+      description: ""
+      operationId: "deleteFile"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            object_key:
+              type: "string"
+              example: "hpf-storage/AWS357406450283565056"
+              description: "オブジェクトキー"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              result:
+                type: "string"
+                example: "success"
+              response_body:
+                type: "object"
+                properties:
+                  object_key:
+                    type: "string"
+                    example: "hpf-storage/AWS357406450283565056"
+                    description: "オブジェクトキー"
+securityDefinitions:
+  app_key:
+    type: "apiKey"
+    name: "X-AUTH-APP-KEY"
+    in: "header"
+    description: "アプリケーションキー"
+  user_id:
+    type: "apiKey"
+    in: "header"
+    name: "X-AUTH-USER-ID"
+    description: "ユーザID"
+definitions:
+  Account:
+    type: "object"
+    properties:
+      corporationid__c:
+        type: "string"
+        readOnly: true
+        description: >
+          加盟店ID
+            * 最大30文字
+      name:
+        type: "string"
+        description: >
+          加盟店名
+            * 最大255文字
+      namekana__c:
+        type: "string"
+        description: >
+          加盟店名カナ
+            * 最大255文字
+            * カタカナのみ
+      billingpostalcode:
+        type: "string"
+        description: >
+          郵便番号
+            * 最大20文字
+            * 郵便番号
+      billingstate:
+        type: "string"
+        description: >
+          都道府県
+            * 最大80文字
+            * 都道府県
+      billingcity:
+        type: "string"
+        description: >
+          市町村
+            * 最大40文字
+      billingstreet:
+        type: "string"
+        description: >
+          町名・地番
+            * 最大255文字
+      buildingname__c:
+        type: "string"
+        description: >
+          建物名
+            * 最大255文字
+      phone:
+        type: "string"
+        description: >
+          電話番号
+            * 最大40文字
+            * 電話番号
+      phoneng__c:
+        type: "boolean"
+        description: "TEL NG"
+      fax:
+        type: "string"
+        description: >
+          FAX
+            * 最大40文字
+            * 電話番号
+      faxng__c:
+        type: "boolean"
+        description: "FAX NG"
+      email__c:
+        type: "string"
+        description: >
+          E-Mail
+            * 最大80文字
+            * メールアドレス
+      emailng__c:
+        type: "boolean"
+        description: "Email NG"
+      website:
+        type: "string"
+        description: >
+          サイトURL
+            * 最大255文字
+      parentid:
+        type: "string"
+        description: >
+          親法人ID
+            * 最大18文字
+      headoffice__c:
+        type: "string"
+        description: >
+          本店ID
+            * 最大18文字
+      foraccountingnotext__c:
+        type: "string"
+        description: >
+          経理用No.
+            * 最大255文字
+      shopnametext__c:
+        type: "string"
+        description: >
+          店舗名
+            * 最大255文字
+      shopkanatext__c:
+        type: "string"
+        description: >
+          店舗名カナ
+            * 最大255文字
+            * カタカナのみ
+      branchofficename__c:
+        type: "string"
+        description: >
+          支店名
+            * 最大255文字
+      branchofficekana__c:
+        type: "string"
+        description: >
+          支店名カナ
+            * 最大255文字
+            * カタカナのみ
+      contactng__c:
+        type: "boolean"
+        description: "接触NG"
+      alliancearchitect__c:
+        type: "boolean"
+        description: "提携建築家"
+      affiliates__c:
+        type: "boolean"
+        description: "提携法人"
+      notpayment__c:
+        type: "boolean"
+        description: "未入金"
+      bankruptcy__c:
+        type: "boolean"
+        description: "倒産"
+      is_available_r_de_go__c:
+        type: "boolean"
+        description: "RでGo契約"
+      is_available_cms__c:
+        type: "boolean"
+        description: "CMS契約"
+      is_available_pms__c:
+        type: "boolean"
+        description: "PMS契約"
+      is_available_iekachi__c:
+        type: "boolean"
+        description: "iekachi BOX契約"
+      architrend_rights__c:
+        type: "boolean"
+        example: false
+        description: "アーキトレンドCAD権利会員"
+      ownerid:
+        type: "string"
+        description: >
+          法人 所有者
+            * 最大18文字
+      is_service_delete__c:
+        type: "boolean"
+        description: "サービス削除フラグ"
+      sfid:
+        type: "string"
+        description: >
+          SFID
+            * 最大18文字
+      createddate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        description: "作成日"
+      systemmodstamp:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        description: "システム最終更新日"
+      created_by_service__c:
+        type: "string"
+        description: >
+          データ作成サービス
+            * 最大30文字
+      last_modified_by_service__c:
+        type: "string"
+        description: >
+          データ更新サービス
+            * 最大30文字
+      isdeleted:
+        type: "boolean"
+        example: false
+        description: "削除フラグ"
+      iekachi_60years_support_contract_date__c:
+        type: "string"
+        format: "date"
+        description: >
+          家価値60年サポート加盟契約日
+           * 参照のみ
+      iekachi_membership_contract_date__c:
+        type: "string"
+        format: "date"
+        description: >
+          iekachiBOX加盟契約日
+           * 参照のみ
+      r_houseshopnametext__c:
+        type: "string"
+        description: >
+          R+house店舗名
+           * 最大255文字
+           * 参照のみ
+      topaccount__c:
+        type: "string"
+        description: >
+          Top法人
+           * 最大30文字
+           * 参照のみ
+      tophead__c:
+        type: "string"
+        description: >
+          TOP本店
+           * 最大30文字
+           * 参照のみ
+  Contact:
+    type: "object"
+    properties:
+      contact_id__c:
+        type: "string"
+        readOnly: true
+        description: >
+          HPF担当者ID
+            * 最大30文字
+      accountid:
+        type: "string"
+        readOnly: true
+        description: >
+          加盟店ID(SFID)
+            * 最大18文字
+      corporationid__c:
+        type: "string"
+        description: >
+          加盟店ID
+            * 最大1300文字
+      hpf_permission__c:
+        type: "string"
+        enum: ["owner", "admin", "member"]
+        description: >
+          HPF権限
+            * 最大30文字
+      contact_kind__c:
+        type: "string"
+        enum:
+          - 加盟店
+          - 建築家
+          - IC
+        description: >
+          ユーザー種別
+            * 最大255文字
+      invalid_reason__c:
+        type: "string"
+        description: >
+          無効化コメント
+            * 最大255文字
+      mailingpostalcode:
+        type: "string"
+        description: >
+          郵便番号(法人用)
+            * 最大1333文字
+            * 郵便番号
+      mailingstate:
+        type: "string"
+        description: >
+          都道府県(法人用)
+            * 最大80文字
+            * 都道府県
+      mailingcity:
+        type: "string"
+        description: >
+          市区郡(法人用)
+            * 最大40文字
+      mailingstreet:
+        type: "string"
+        description: >
+          町名・番地(法人用)
+            * 最大255文字
+      buildingname__c:
+        type: "string"
+        description: >
+          ビル・マンション名(法人用)
+            * 最大255文字
+      firstname:
+        type: "string"
+        description: >
+          名
+            * 最大40文字
+            * 数字、記号、空白以外
+      lastname:
+        type: "string"
+        description: >
+          氏
+            * 最大40文字
+            * 数字、記号、空白以外
+      firstnamekana__c:
+        type: "string"
+        description: >
+          名カナ
+            * 最大80文字
+            * カタカナのみ
+      lastnamekana__c:
+        type: "string"
+        description: >
+          氏カナ
+            * 最大80文字
+            * カタカナのみ
+      title:
+        type: "string"
+        description: >
+          役職
+            * 最大128文字
+      belongbranchoffice__c:
+        type: "string"
+        description: >
+          所属支店
+            * 最大255文字
+      department:
+        type: "string"
+        description: >
+          部署
+            * 最大80文字
+      phone:
+        type: "string"
+        description: >
+          TEL
+            * 最大40文字
+            * 電話番号
+      donotcall:
+        type: "boolean"
+        description: "TEL NG"
+      fax:
+        type: "string"
+        description: >
+          Fax
+            * 最大40文字
+            * 電話番号
+      hasoptedoutoffax:
+        type: "boolean"
+        description: "FAX NG"
+      email:
+        type: "string"
+        description: >
+          Email
+            * 最大80文字
+            * メールアドレス
+      hasoptedoutofemail:
+        type: "boolean"
+        description: "Email NG"
+      mobilephone:
+        type: "string"
+        description: >
+          携帯TEL
+            * 最大40文字
+            * 電話番号
+      mobilephoneng__c:
+        type: "boolean"
+        description: "携帯TEL NG"
+      mobilemail__c:
+        type: "string"
+        description: >
+          携帯Email
+            * 最大80文字
+            * メールアドレス
+      mobilemailng__c:
+        type: "boolean"
+        description: "携帯Email NG"
+      architect_office_url__c:
+        type: "string"
+        description: >
+          建築家事務所URL
+            * 最大255文字
+      profile_movie_url__c:
+        type: "string"
+        description: >
+          建築家プロフィール動画URL
+            * 最大255文字
+      profile_file_key__c:
+        type: "string"
+        description: >
+          建築家プロフィールオブジェクトキー
+            * 最大255文字
+      representativename__c:
+        type: "boolean"
+        description: "代表者"
+      retirement__c:
+        type: "boolean"
+        description: "退職"
+      plaza__c:
+        type: "boolean"
+        description: "PLAZA"
+      plazamail__c:
+        type: "boolean"
+        description: "PLAZAメール"
+      view__c:
+        type: "boolean"
+        description: "View"
+      viewmail__c:
+        type: "boolean"
+        description: "Viewメール"
+      role_of_r_de_go__c:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: >
+          RでGo利用権限
+            * 最大255文字
+      role_of_cms__c:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: >
+          CMS利用権限
+            * 最大255文字
+      role_of_pms__c:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: >
+          PMS利用権限
+            * 最大255文字
+      role_of_iekachi__c:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: >
+          iekachi BOX利用権限
+            * 最大255文字
+      r_house_certificate_number__c:
+        type: "string"
+        description: >
+          R+house施工責任者修了証番号
+            * 最大255文字
+      r_house_construction_supervisor__c:
+        type: "string"
+        description: >
+          R+house施工責任者区分
+            * 最大255文字
+      r_house_certificate_remove__c:
+        type: "boolean"
+        example: false
+        description: "R+house施工責任者認定削除"
+      is_service_delete__c:
+        type: "boolean"
+        description: "サービス削除フラグ"
+      sfid:
+        type: "string"
+        description: >
+          SFID
+            * 最大18文字
+      createddate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        description: "作成日"
+      systemmodstamp:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        description: "システム最終更新日"
+      created_by_service__c:
+        type: "string"
+        description: >
+          データ作成サービス
+            * 最大30文字
+      last_modified_by_service__c:
+        type: "string"
+        description: >
+          データ更新サービス
+            * 最大30文字
+      isdeleted:
+        type: "boolean"
+        example: false
+        description: "削除フラグ"
+      corporation:
+        $ref: "#/definitions/_SubAccount"
+  Owner:
+    type: "object"
+    properties:
+      owner_id__c:
+        type: "string"
+        readOnly: true
+        description: >
+          オーナーID
+            * 最大30文字
+      corporation_id__c:
+        type: "string"
+        description: >
+          加盟店ID
+            * 最大30文字
+      account_id__c:
+        type: "string"
+        description: >
+          加盟店ID(SFID)
+            * 最大18文字
+      last_name__c:
+        type: "string"
+        description: >
+          オーナー姓
+            * 最大80文字
+            * 数字、記号、空白以外
+      first_name__c:
+        type: "string"
+        description: >
+          オーナー名
+            * 最大80文字
+            * 数字、記号、空白以外
+      last_name_kana__c:
+        type: "string"
+        description: >
+          オーナー姓カナ
+            * 最大80文字
+            * カタカナのみ
+      first_name_kana__c:
+        type: "string"
+        description: >
+          オーナー名カナ
+            * 最大80文字
+            * カタカナのみ
+      owner_company_name__c:
+        type: "string"
+        description: >
+          オーナー法人
+            * 最大80文字
+      owner_company_name_kana__c:
+        type: "string"
+        description: >
+          オーナー法人カナ
+            * 最大80文字
+            * カタカナのみ
+      birthdate__c:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "生年月日"
+      email1__c:
+        type: "string"
+        description: >
+          Email1
+            * 最大80文字
+            * メールアドレス
+      email2__c:
+        type: "string"
+        description: >
+          Email2
+            * 最大80文字
+            * メールアドレス
+      tel1__c:
+        type: "string"
+        description: >
+          電話番号1
+            * 最大40文字
+            * 電話番号
+      tel2__c:
+        type: "string"
+        description: >
+          電話番号2
+            * 最大40文字
+            * 電話番号
+      fax__c:
+        type: "string"
+        description: >
+          FAX番号
+            * 最大40文字
+            * 電話番号
+      postal_code__c:
+        type: "string"
+        description: >
+          郵便番号
+            * 最大20文字
+            * 郵便番号
+      prefecture__c:
+        type: "string"
+        description: >
+          都道府県
+            * 最大80文字
+            * 都道府県
+      city__c:
+        type: "string"
+        description: >
+          市町村名
+            * 最大80文字
+      street__c:
+        type: "string"
+        description: >
+          町名・地番など
+            * 最大80文字
+      building_name__c:
+        type: "string"
+        description: >
+          ビル・マンション名
+            * 最大80文字
+      address_kana__c:
+        type: "string"
+        description: >
+          住所カナ
+            * 最大255文字
+            * カタカナのみ
+      owner_type__c:
+        type: "string"
+        enum: ["個人", "法人"]
+        description: >
+          オーナー種別
+            * 最大80文字
+      owner_rank__c:
+        type: "string"
+        description: >
+          オーナーランク
+            * 最大80文字
+      sex__c:
+        type: "string"
+        enum: ["男", "女"]
+        description: >
+          性別
+            * 最大255文字
+      job__c:
+        type: "string"
+        description: >
+          職業
+            * 最大80文字
+      income__c:
+        type: "string"
+        description: >
+          所得
+            * 最大80文字
+      representative__c:
+        type: "string"
+        description: >
+          代表者名
+            * 最大80文字
+      representative_kana__c:
+        type: "string"
+        description: >
+          代表者名カナ
+            * 最大80文字
+            * カタカナのみ
+      industry__c:
+        type: "string"
+        description: >
+          業種
+            * 最大80文字
+      capital__c:
+        type: "number"
+        format: "double"
+        description: "資本金"
+      annual_revenue__c:
+        type: "number"
+        format: "double"
+        description: "売上高"
+      branch__c:
+        type: "string"
+        description: >
+          事業所
+            * 最大80文字
+      number_of_employees__c:
+        type: "number"
+        format: "double"
+        description: "従業員数"
+      login_name__c:
+        type: "string"
+        description: >
+          ログインユーザー名
+            * 最大80文字
+            * ユニークチェック
+      login_password__c:
+        type: "string"
+        description: >
+          ログインパスワード
+            * 最大80文字
+      is_service_delete__c:
+        type: "boolean"
+        description: "サービス削除フラグ"
+      created_by_service__c:
+        type: "string"
+        description: >
+          データ作成サービス
+            * 最大30文字
+      last_modified_by_service__c:
+        type: "string"
+        description: >
+          データ更新サービス
+            * 最大30文字
+      isdeleted:
+        type: "boolean"
+        example: false
+        description: "削除フラグ"
+      corporation:
+        $ref: "#/definitions/_SubAccount"
+  User:
+    type: "object"
+    properties:
+      createddate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      name:
+        type: "string"
+      systemmodstamp:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      contactid:
+        type: "string"
+      country:
+        type: "string"
+      sfid:
+        type: "string"
+      id:
+        type: "number"
+      _hc_lastop:
+        type: "string"
+      _hc_err:
+        type: "string"
+      username:
+        type: "string"
+      middlename:
+        type: "string"
+      sendername:
+        type: "string"
+      lastlogindate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      lastname:
+        type: "string"
+      userpermissionssupportuser:
+        type: "boolean"
+      userpreferencesdisablefollowersemail:
+        type: "boolean"
+      portalrole:
+        type: "string"
+      street:
+        type: "string"
+      userpermissionsinteractionuser:
+        type: "boolean"
+      profileid:
+        type: "string"
+      receivesadmininfoemails:
+        type: "boolean"
+      smallphotourl:
+        type: "string"
+      aboutme:
+        type: "string"
+      outofofficemessage:
+        type: "string"
+      userpermissionsmobileuser:
+        type: "boolean"
+      forecastenabled:
+        type: "boolean"
+      itemslct__c:
+        type: "string"
+      senderemail:
+        type: "string"
+      userpreferencesactivityreminderspopup:
+        type: "boolean"
+      userpreferencesdiscommentafterlikeemail:
+        type: "boolean"
+      userpreferencesdismentionscommentemail:
+        type: "boolean"
+      accountid:
+        type: "string"
+      companyname:
+        type: "string"
+      managerid:
+        type: "string"
+      lastvieweddate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      userpreferencesdisablechangecommentemail:
+        type: "boolean"
+      bannerphotourl:
+        type: "string"
+      userpreferencesdisableendorsementemail:
+        type: "boolean"
+      offlinepdatrialexpirationdate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      timezonesidkey:
+        type: "string"
+      userpreferencesdisablelikeemail:
+        type: "boolean"
+      emailpreferencesautobccstayintouch:
+        type: "boolean"
+      isportalenabled:
+        type: "boolean"
+      stayintouchsubject:
+        type: "string"
+      city:
+        type: "string"
+      localesidkey:
+        type: "string"
+      userpreferencesdisablebookmarkemail:
+        type: "boolean"
+      federationidentifier:
+        type: "string"
+      latitude:
+        type: "number"
+        format: "double"
+      fullphotourl:
+        type: "string"
+      mobilephone:
+        type: "string"
+      userpermissionsavantgouser:
+        type: "boolean"
+      userpreferencescreatelexappswtshown:
+        type: "boolean"
+      division:
+        type: "string"
+      languagelocalekey:
+        type: "string"
+      userpreferencesdisableallfeedsemail:
+        type: "boolean"
+      lastmodifieddate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      callcenterid:
+        type: "string"
+      phone:
+        type: "string"
+      userpreferencesdisableprofilepostemail:
+        type: "boolean"
+      userpreferencesdisablelatercommentemail:
+        type: "boolean"
+      userpermissionscallcenterautologin:
+        type: "boolean"
+      longitude:
+        type: "number"
+        format: "double"
+      lastpasswordchangedate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      offlinetrialexpirationdate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      isactive:
+        type: "boolean"
+      smallbannerphotourl:
+        type: "string"
+      alias:
+        type: "string"
+      emailencodingkey:
+        type: "string"
+      badgetext:
+        type: "string"
+      userpreferencesdisablemessageemail:
+        type: "boolean"
+      lastmodifiedbyid:
+        type: "string"
+      state:
+        type: "string"
+      userpreferencesdisablefilesharenotificationsforapi:
+        type: "boolean"
+      suffix:
+        type: "string"
+      mediumphotourl:
+        type: "string"
+      department:
+        type: "string"
+      defaultgroupnotificationfrequency:
+        type: "string"
+      stayintouchnote:
+        type: "string"
+      receivesinfoemails:
+        type: "boolean"
+      userpermissionsofflineuser:
+        type: "boolean"
+      emailpreferencesstayintouchreminder:
+        type: "boolean"
+      userpreferencescachediagnostics:
+        type: "boolean"
+      stayintouchsignature:
+        type: "string"
+      emailpreferencesautobcc:
+        type: "boolean"
+      communitynickname:
+        type: "string"
+      userpreferencesdisprofpostcommentemail:
+        type: "boolean"
+      employeenumber:
+        type: "string"
+      geocodeaccuracy:
+        type: "string"
+      signature:
+        type: "string"
+      userpermissionssfcontentuser:
+        type: "boolean"
+      postalcode:
+        type: "string"
+      title:
+        type: "string"
+      userpreferencesdisablementionspostemail:
+        type: "boolean"
+      userpreferencesapexpagesdevelopermode:
+        type: "boolean"
+      userpreferencesdisablesharepostemail:
+        type: "boolean"
+      digestfrequency:
+        type: "string"
+      userpermissionsmarketinguser:
+        type: "boolean"
+      isprofilephotoactive:
+        type: "boolean"
+      isextindicatorvisible:
+        type: "boolean"
+      createdbyid:
+        type: "string"
+      firstname:
+        type: "string"
+      email:
+        type: "string"
+      lastreferenceddate:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+      fax:
+        type: "string"
+      mediumbannerphotourl:
+        type: "string"
+      extension:
+        type: "string"
+      delegatedapproverid:
+        type: "string"
+      userpreferenceshidebiggerphotocallout:
+        type: "boolean"
+      userpreferenceshideenduseronboardingassistantmodal:
+        type: "boolean"
+      usertype:
+        type: "string"
+      userpreferenceshascelebrationbadge:
+        type: "boolean"
+      userpreferenceshidesecondchatteronboardingsplash:
+        type: "boolean"
+      userpreferenceshidecsngetchattermobiletask:
+        type: "boolean"
+      userpreferencesfavoritesshowtopfavorites:
+        type: "boolean"
+      userpreferencesfavoriteswtshown:
+        type: "boolean"
+      userpreferenceseventreminderscheckboxdefault:
+        type: "boolean"
+      userpreferencespathassistantcollapsed:
+        type: "boolean"
+      userpreferencesenableautosubforfeeds:
+        type: "boolean"
+      userpreferencespreviewlightning:
+        type: "boolean"
+      userpreferenceshides1browserui:
+        type: "boolean"
+      userpreferencesrecordhomereservedwtshown:
+        type: "boolean"
+      userpreferenceshidecsndesktoptask:
+        type: "boolean"
+      userpreferencesexcludemailappattachments:
+        type: "boolean"
+      userpreferencesglobalnavbarwtshown:
+        type: "boolean"
+      userpreferenceshidesfxwelcomemat:
+        type: "boolean"
+      userpreferenceshidelightningmigrationmodal:
+        type: "boolean"
+      userpreferenceslightningexperiencepreferred:
+        type: "boolean"
+      userpreferenceshidechatteronboardingsplash:
+        type: "boolean"
+      userpreferencesglobalnavgridmenuwtshown:
+        type: "boolean"
+      userroleid:
+        type: "string"
+      userpreferencespreviewcustomtheme:
+        type: "boolean"
+      userpreferencesremindersoundoff:
+        type: "boolean"
+      userpreferencesrecordhomesectioncollapsewtshown:
+        type: "boolean"
+  Project:
+    type: "object"
+    properties:
+      project_id:
+        type: "string"
+        readOnly: true
+        description: >
+          案件ID
+            * 最大30文字
+      name:
+        type: "string"
+        description: >
+          案件名
+            * 最大255文字
+      kind:
+        type: "integer"
+        enum: [1,2]
+        description: >
+          案件種別
+           * 1 - 施工
+           * 2 - メンテナンス
+      property_id:
+        type: "string"
+        description: >
+          物件ID
+            * 最大30文字
+      construction_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "着工日"
+      completion_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "竣工日"
+      delivery_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "引渡日"
+      contract_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "契約日"
+      framework_completion_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "上棟日"
+      scheduled_construction_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "着工予定日"
+      construction_schedule_comment:
+        type: "string"
+        description: >
+          着工予定コメント
+            * 最大255文字
+      construction_undecided_flg:
+        type: "boolean"
+        description: "着工予定未定"
+      contract_amount:
+        type: "integer"
+        description: "受注金額"
+      sales_person:
+        type: "string"
+        description: >
+          営業担当者
+            * 最大255文字
+      work_person:
+        type: "string"
+        description: >
+          工事担当者
+            * 最大255文字
+      first_periodic_inspection_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "定期点検日（1回目）"
+      second_periodic_inspection_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "定期点検日（2回目）"
+      third_periodic_inspection_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "定期点検日（3回目）"
+      fourth_periodic_inspection_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "定期点検日（4回目）"
+      client_name:
+        type: "string"
+        description: >
+          施主名
+            * 最大255文字
+      client_name_kana:
+        type: "string"
+        description: >
+          施主フリガナ
+            * 最大255文字
+      client_postal_code:
+        type: "string"
+        description: >
+          施主営業後郵便番号
+            * 最大255文字
+            * 郵便番号
+      client_prefecture:
+        type: "string"
+        description: >
+          施主営業後都道府県
+            * 最大255文字
+            * 都道府県
+      client_city:
+        type: "string"
+        description: >
+          施主営業後市区町村
+            * 最大255文字
+      client_address:
+        type: "string"
+        description: >
+          施主営業後番地
+            * 最大255文字
+      client_building_name:
+        type: "string"
+        description: >
+          施主営業後ビル名
+            * 最大255文字
+      client_address_kana:
+        type: "string"
+        description: >
+          施主営業後住所フリガナ
+            * 最大255文字
+            * カタカナのみ
+      client_email:
+        type: "string"
+        description: >
+          施主EMAIL
+            * 最大255文字
+            * メールアドレス
+      client_fax:
+        type: "string"
+        description: >
+          施主FAX
+            * 最大255文字
+            * 電話番号
+      client_tel:
+        type: "string"
+        description: >
+          施主電話
+            * 最大255字
+            * 電話番号
+      client_postal_code_am:
+        type: "string"
+        description: >
+          施主入居後郵便番号
+            * 最大255文字
+            * 郵便番号
+      client_prefecture_am:
+        type: "string"
+        description: >
+          施主入居後都道府県
+            * 最大255文字
+            * 都道府県
+      client_city_am:
+        type: "string"
+        description: >
+          施主入居後市区町村
+            * 最大255文字
+      client_address_am:
+        type: "string"
+        description: >
+          施主入居後番地
+            * 最大255文字
+      client_building_name_am:
+        type: "string"
+        description: >
+          施主入居後ビル名
+            * 最大255文字
+      client_tel_am:
+        type: "string"
+        description: >
+          施主入居後電話番号
+            * 最大12文字
+            * 電話番号
+      client_family_structure:
+        type: "string"
+        description: >
+          施主家族構成
+            * 最大255文字
+      client_annual_income:
+        type: "string"
+        description: >
+          施主年収
+            * 最大255文字
+      maintenance_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "メンテナンス日付"
+      maintenance_supplier_name:
+        type: "string"
+        description: >
+          メンテナンス業者名
+            * 最大255文字
+      maintenance_classification:
+        type: "string"
+        description: >
+          メンテナンス区分
+            * 最大255文字
+      maintenance_remarks:
+        type: "string"
+        description: >
+          メンテナンス備考
+            * 最大255文字
+      maintenance_memo:
+        type: "string"
+        description: >
+          メンテナンスメモ
+            * 最大255文字
+      created_at:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        readOnly: true
+        description: "登録日"
+      updated_at:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        readOnly: true
+        description: "更新日"
+      delete_flg:
+        type: "boolean"
+        example: false
+        readOnly: true
+        description: "削除フラグ"
+      property:
+        $ref: "#/definitions/_SubProperty"
+  Property:
+    type: "object"
+    properties:
+      property_id:
+        type: "string"
+        readOnly: true
+        description: >
+          物件ID
+            * 最大30文字
+      corporation_id:
+        type: "string"
+        description: >
+          加盟店ID
+            * 最大30文字
+      owner_id:
+        type: "string"
+        description: >
+          オーナーID
+            * 最大30文字
+      joint_name:
+        type: "string"
+        description: >
+          連名
+            * 最大255文字
+      joint_name_kana:
+        type: "string"
+        description: >
+          連名カナ
+            * 最大255文字
+            * カタカナ、全角中黒、半角空白のみ
+      architect_corporation_id:
+        type: "string"
+        description: >
+          建築家加盟店ID
+            * 最大30文字
+      ic_corporation_id:
+        type: "string"
+        description: >
+          IC加盟店ID
+            * 最大30文字
+      ic_supervisor_corporation_id:
+        type: "string"
+        description: >
+          IC監修者加盟店ID
+            * 最大30文字
+      name:
+        type: "string"
+        description: >
+          物件名
+            * 最大255文字
+      name_kana:
+        type: "string"
+        description: >
+          物件名カナ
+            * 最大255文字
+            * カタカナ、全角中黒、半角空白のみ
+      kind:
+        type: "integer"
+        enum: [1,2]
+        description: >
+          物件種別
+           * 1 - 土地
+           * 2 - 建物
+      parent_id:
+        type: "string"
+        description: >
+          親物件ID
+            * 最大30文字
+      postal_code:
+        type: "string"
+        description: >
+          郵便番号
+            * 最大255文字
+            * 郵便番号
+      prefecture:
+        type: "string"
+        description: >
+          都道府県
+            * 最大255文字
+            * 都道府県
+      city:
+        type: "string"
+        description: >
+          市町村
+            * 最大255文字
+      address:
+        type: "string"
+        description: >
+          町名以下
+            * 最大255文字
+      longitude:
+        type: "number"
+        format: "double"
+        description: "経度"
+      latitude:
+        type: "number"
+        format: "double"
+        description: "緯度"
+      status:
+        type: "string"
+        description: >
+          物件状態
+            * 最大255文字
+      site_area:
+        type: "number"
+        format: "double"
+        description: "敷地面積"
+      building_coverage_ratio:
+        type: "number"
+        format: "double"
+        description: "建ぺい率"
+      floor_area_ratio:
+        type: "number"
+        format: "double"
+        description: "容積率"
+      right:
+        type: "integer"
+        enum: [1,2,99]
+        description: >
+          土地権利
+           * 1 - 土地
+           * 2 - 建物
+           * 99 - その他
+      adjacent_road:
+        type: "string"
+        description: >
+          接道情報
+            * 最大255文字
+      building_name:
+        type: "string"
+        description: >
+          建物名
+            * 最大255文字
+      floors_above_ground:
+        type: "integer"
+        description: "地上階数"
+      floors_below_ground:
+        type: "integer"
+        description: "地下階数"
+      building_area:
+        type: "number"
+        format: "double"
+        description: "建築面積"
+      total_floor_area:
+        type: "number"
+        format: "double"
+        description: "延床面積"
+      each_floor_area:
+        type: "string"
+        description: >
+          各階床面積
+            * 最大255文字
+      eaves_area:
+        type: "number"
+        format: "double"
+        description: "軒面積"
+      roof_slope:
+        type: "number"
+        format: "double"
+        description: "屋根勾配"
+      outer_perimeter:
+        type: "number"
+        format: "double"
+        description: "外周全長"
+      veranda_area:
+        type: "number"
+        format: "double"
+        description: "ベランダ面積"
+      internal_area:
+        type: "number"
+        format: "double"
+        description: "内壁面積"
+      statutory_floor_area:
+        type: "number"
+        format: "double"
+        description: "法定床面積"
+      construction_method:
+        type: "string"
+        description: >
+          工法
+            * 最大255文字
+      construction:
+        type: "integer"
+        enum: [1,2,3,4,5,6,7,8,9,99]
+        description: >
+          構造
+           * 1 - 木造
+           * 2 - RC造
+           * 3 - 鉄骨造
+           * 4 - 在来
+           * 5 - 2×4
+           * 6 - 木造
+           * 7 - 軽量鉄骨
+           * 8 - 鉄筋コンクリート造
+           * 9 - 指定なし
+           * 99 - その他
+      building_kind:
+        type: "integer"
+        enum: [1,2,99]
+        description: >
+          種別
+           * 1 - 新築
+           * 2 - 建替
+           * 99 - その他
+      rooms:
+        type: "integer"
+        description: "部屋数"
+      layout:
+        type: "integer"
+        enum: [1,2,3,4,5,99]
+        description: >
+          部屋種類
+           * 1 - K
+           * 2 - DK
+           * 3 - LK
+           * 4 - LDK
+           * 5 - SLDK
+           * 99 - その他
+      use:
+        type: "integer"
+        enum: [1,2,3,99]
+        description: >
+          用途
+           * 1 - 住居
+           * 2 - 集合住宅
+           * 3 - 店舗
+           * 99 - その他
+      building_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "建築年月日"
+      confirmation_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "建築確認年月日"
+      last_renovation_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "前回大規模修繕年月日 "
+      foundation_structure:
+        type: "integer"
+        enum: [1,2,3,4,99]
+        description: >
+          基礎構造
+           * 1 - 布基礎＋土壌
+           * 2 - 布基礎＋シート
+           * 3 - 布基礎＋土間コン
+           * 4 - ベタ基礎
+           * 99 - その他
+      outer_wall_kind:
+        type: "integer"
+        enum: [1,2,3,4,5,6,99]
+        description: >
+          外壁種別
+           * 1 - サイティング
+           * 2 - ALC
+           * 3 - タイル
+           * 4 - モルタル塗り
+           * 5 - 土塗り
+           * 6 - 羽目板
+           * 99 - その他
+      roof_kind:
+        type: "integer"
+        enum: [1,2,3,99]
+        description: >
+          外壁種別
+           * 1 - スレート
+           * 2 - 瓦
+           * 3 - 金属系
+           * 99 - その他
+      veranda_waterproof_kind:
+        type: "integer"
+        enum: [1,2,3,4,99]
+        description: >
+          ベランダ防水種別
+           * 1 - FRP
+           * 2 - ウレタン
+           * 3 - シート
+           * 4 - アスファルト
+           * 99 - その他"
+      bathroom_kind:
+        type: "integer"
+        enum: [1,2,3,99]
+        description: >
+          浴室種別
+           * 1 - ユニットバス
+           * 2 - 在来
+           * 3 - 2階のみ
+           * 99 - その他
+      wc_kind:
+        type: "integer"
+        enum: [1,2,3,99]
+        description: >
+          WC種別
+           * 1 - 空洞
+           * 2 - 土つめ
+           * 3 - 2階のみ
+           * 99 - その他
+      is_sixty_years:
+        type: "boolean"
+        description: "60年フラグ"
+      c_value:
+        type: "number"
+        format: "double"
+        description: "C値"
+      ua_value:
+        type: "number"
+        format: "double"
+        description: "UA値"
+      is_r_plus_panel:
+        type: "boolean"
+        description: "R+パネル"
+      r_plus_panel_order_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "R+パネル発注日"
+      r_plus_panel_delivery_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "R+パネル納品日"
+      registration_date:
+        type: "string"
+        format: "date"
+        example: "2018-12-31"
+        description: "登記日"
+      created_at:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        readOnly: true
+        description: "登録日"
+      updated_at:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        readOnly: true
+        description: "更新日"
+      created_by_service__c:
+        type: "string"
+        description: >
+          データ作成サービス
+            * 最大30文字
+      last_modified_by_service__c:
+        type: "string"
+        description: >
+          データ更新サービス
+            * 最大30文字
+      corporation:
+        $ref: "#/definitions/_SubAccount"
+      owner:
+        $ref: "#/definitions/_SubOwner"
+  FileInfo:
+    type: "object"
+    properties:
+      fileinfo_id:
+        type: "string"
+        readOnly: true
+        description: >
+          ファイル情報管理ID
+            * 最大30文字
+      account_id:
+        type: "string"
+        description: >
+          加盟店ID
+            * 最大30文字
+      key_id:
+        type: "string"
+        description: >
+          キーID
+            * 最大30文字
+      object_key:
+        type: "string"
+        description: >
+          オブジェクトキー
+            * 最大255文字
+      kind_tag:
+        type: "string"
+        enum:
+          - 加盟店
+          - オーナー
+          - 物件
+          - 案件
+        description: >
+          情報種別タグ
+            * 最大255文字
+      filename:
+        type: "string"
+        description: >
+          ファイル名
+            * 最大255文字
+      tag_01:
+        type: "string"
+        description: >
+          タグ1
+            * 最大255文字
+      tag_02:
+        type: "string"
+        description: >
+          タグ2
+            * 最大255文字
+      tag_03:
+        type: "string"
+        description: >
+          タグ3
+            * 最大255文字
+      tag_04:
+        type: "string"
+        description: >
+          タグ4
+            * 最大255文字
+      tag_05:
+        type: "string"
+        description: >
+          タグ5
+            * 最大255文字
+      tag_06:
+        type: "string"
+        description: >
+          タグ6
+            * 最大255文字
+      tag_07:
+        type: "string"
+        description: >
+          タグ7
+            * 最大255文字
+      tag_08:
+        type: "string"
+        description: >
+          タグ8
+            * 最大255文字
+      tag_09:
+        type: "string"
+        description: >
+          タグ9
+            * 最大255文字
+      tag_10:
+        type: "string"
+        description: >
+          タグ10
+            * 最大255文字
+      scope:
+        type: "integer"
+        enum: [1,2,3,4]
+        description: >
+          アクセス範囲
+           * 1 - Group
+           * 2 - Authed
+           * 3 - Public
+           * 4 - Private
+      extension:
+        type: "string"
+        description: >
+          拡張子
+            * 最大255文字
+      size:
+        type: "integer"
+        description: "サイズ"
+      user_id:
+        type: "string"
+        description: >
+          アップロードユーザーID
+            * 最大255文字
+      created_at:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        readOnly: true
+        description: "登録日"
+      updated_at:
+        type: "string"
+        format: "date-time"
+        example: "2018-12-31T23:59:59.999+0000"
+        readOnly: true
+        description: "更新日"
+      delete_flg:
+        type: "boolean"
+        example: false
+        readOnly: true
+        description: "削除フラグ"
+      corporation:
+        $ref: "#/definitions/_SubAccount"
+  AuthResponse:
+    type: "object"
+    properties:
+      user_id:
+        type: "string"
+        description: "ユーザID"
+      user_name:
+        type: "string"
+        description: "ユーザアカウント"
+      contactid:
+        type: "string"
+        description: "担当者ID"
+      corporationid:
+        type: "string"
+        description: "加盟店ID"
+      user_kind:
+        type: "string"
+        enum: ["HyAS", "加盟店", "建築家", "IC", "建築家／所員" ]
+        description: "ユーザ種別"
+      hpf_admin:
+        type: "string"
+        enum: ["owner", "admin", "member"]
+        description: >
+          HPF管理者権限
+            * HyASユーザの場合はnull
+      firstname:
+        type: "string"
+        description: "名"
+      lastname:
+        type: "string"
+        description: "姓"
+      username:
+        type: "string"
+        description: "姓 名"
+      email:
+        type: "string"
+        description: "メールアドレス"
+      usage_auth_r_de_go:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: "RでGo利用権限"
+      usage_auth_cms:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: "CMS利用権限"
+      usage_auth_pms:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: "PMS利用権限"
+      usage_auth_iekachi:
+        type: "string"
+        enum: ["利用可", "利用不可", "管理者"]
+        description: "iekachi BOX利用権限"
+  OwnerAuthResponse:
+    type: "object"
+    properties:
+      user_id:
+        type: "string"
+        description: "オーナーID"
+      company_id:
+        type: "string"
+        description: "加盟店ID"
+      firstname:
+        type: "string"
+        description: "名"
+      lastname:
+        type: "string"
+        description: "姓"
+      email:
+        type: "string"
+        description: "メールアドレス"
+      user_kind:
+        type: "string"
+        description: "ユーザ種別"
+      hpf_admin:
+        type: "string"
+        description: "HPF管理者権限"
+      usage_auth_pms:
+        type: "string"
+        enum: ["利用可", "利用不可"]
+        description: "PMS利用状態"
+      usage_auth_iekachi:
+        type: "string"
+        enum: ["利用可", "利用不可"]
+        description: "iekachi BOX利用状態"
+  _SubAccount:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "加盟店名"
+      namekana__c:
+        type: "string"
+        description: "加盟店名カナ"
+      shippingstate:
+        type: "string"
+        description: "都道府県"
+      shippingcity:
+        type: "string"
+        description: "市町村"
+      shippingstreet:
+        type: "string"
+        description: "町名・地番"
+      billdingname__c:
+        type: "string"
+        description: "建物名"
+  _SubOwner:
+    type: "object"
+    properties:
+      last_name__c:
+        type: "string"
+        description: "オーナー姓"
+      first_name__c:
+        type: "string"
+        description: "オーナー名"
+      last_name_kana__c:
+        type: "string"
+        description: "オーナー姓カナ"
+      first_name_kana__c:
+        type: "string"
+        description: "オーナー名カナ"
+      email1__c:
+        type: "string"
+        description: "Email1"
+      email2__c:
+        type: "string"
+        description: "Email2"
+      tel1__c:
+        type: "string"
+        description: "電話番号1"
+      tel2__c:
+        type: "string"
+        description: "電話番号2"
+      prefecture__c:
+        type: "string"
+        description: "都道府県"
+      city__c:
+        type: "string"
+        description: "市町村名"
+      street__c:
+        type: "string"
+        description: "町名・地番など"
+      building_name__c:
+        type: "string"
+        description: "ビル・マンション名"
+  _SubProperty:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "物件名"
+      name_kana:
+        type: "string"
+        description: "物件名カナ"
+      joint_name:
+        type: "string"
+        description: "連名"
+      joint_name_kana:
+        type: "string"
+        description: "連名カナ"
+      prefecture:
+        type: "string"
+        description: "都道府県"
+      city:
+        type: "string"
+        description: "市町村"
+      address:
+        type: "string"
+        description: "町名以下"
+  ErrorResponse:
+    type: "object"
+    properties:
+      result:
+        type: "string"
+        example: "failure"
+      error_message:
+        type: "string"
+      error_detail:
+        type: "string"
+      error_kind:
+        type: "string"
+  NotFoundErrorResponse:
+    type: "object"
+    properties:
+      result:
+        type: "string"
+        example: "failure"
+      error_message:
+        type: "string"
+        example: "対象の情報は存在しません"
+      error_detail:
+        type: "string"
+        example: "指定ID値: A365795289884528640"
+      error_kind:
+        type: "string"
+        example: "target-not-exists"
+  BadRequestJsonParseErrorResponse:
+    type: "object"
+    properties:
+      result:
+        type: "string"
+        example: "failure"
+      error_message:
+        type: "string"
+        example: "JSON書式上に問題があります[HttpMessageNotReadableException]"
+      error_detail:
+        type: "string"
+        example: "JSON parse error: Cannot construct instance ..."
+      error_kind:
+        type: "string"
+        example: "request-error"
+  BadRequestValidationErrorResponse:
+    type: "object"
+    properties:
+      result:
+        type: "string"
+        example: "failure"
+      error_message:
+        type: "string"
+        example: "JSON書式上に問題があります[HttpMessageNotReadableException]"
+      error_detail:
+        type: "string"
+        example: "JSON parse error: Cannot construct instance ..."
+      error_kind:
+        type: "object"
+        properties:
+          name_kana:
+            type: "array"
+            items:
+              type: "string"
+              example: "allow only katakana"
+          postal_code:
+            type: "array"
+            items:
+              type: "string"
+              example: "invalid zip code"
+          prefecture:
+            type: "array"
+            items:
+              type: "string"
+              example: "invalid prefecture"
+          tel:
+            type: "array"
+            items:
+              type: "string"
+              example: "invalid phone number"
+          email:
+            type: "array"
+            items:
+              type: "string"
+              example: "invalid email address"

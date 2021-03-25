@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.hyas.hpf.database.AccountRepository">
+
+  <!-- # ================================================== SQL定義 -->
+  <select id="count" resultType="long">
+    SELECT COUNT(*)
+      FROM salesforce.account
+    <include refid="findByCriteriaWherePhrase" />
+  </select>
+
+  <select id="search" resultType="Account">
+    SELECT *
+      FROM salesforce.account
+    <include refid="findByCriteriaWherePhrase" />
+    <foreach item="item" collection="pageable.sort" open="ORDER BY" close="" separator=",">
+      ${item.property} ${item.direction}
+    </foreach>
+    LIMIT  #{pageable.pageSize}
+    OFFSET #{pageable.offset}
+  </select>
+
+  <!-- # ================================================== SQLパーツ定義 -->
+  <sql id="findByCriteriaWherePhrase">
+    <where>
+      <if test="criteria.corporationid__c != null">
+        AND corporationid__c IN
+        <foreach collection="criteria.corporationid__c" item="corporation_id"
+          open="(" separator="," close=")">
+          #{corporation_id}
+        </foreach>
+      </if>
+      <if test="criteria.name != null">
+        AND name LIKE '%' || #{criteria.name} || '%'
+      </if>
+      <if test="criteria.namekana__c != null">
+        AND namekana__c LIKE '%' || #{criteria.namekana__c} || '%'
+      </if>
+
+      <!-- 郵便番号 -->
+      <if test="criteria.billingpostalcode != null">
+        AND billingpostalcode LIKE #{criteria.billingpostalcode} || '%'
+      </if>
+
+      <!-- 都道府県 -->
+      <if test="criteria.billingstate != null">
+        AND billingstate LIKE #{criteria.billingstate} || '%'
+      </if>
+
+      <!-- 市町村 -->
+      <if test="criteria.billingcity != null">
+        AND billingcity LIKE #{criteria.billingcity} || '%'
+      </if>
+
+      <!-- 町名・地番 -->
+      <if test="criteria.billingstreet != null">
+        AND billingstreet LIKE #{criteria.billingstreet} || '%'
+      </if>
+
+      <!-- 建物名 -->
+      <if test="criteria.buildingname__c != null">
+        AND buildingname__c LIKE #{criteria.buildingname__c} || '%'
+      </if>
+
+      <if test="criteria.phone != null">
+        AND phone = #{criteria.phone}
+      </if>
+      <if test="criteria.fax != null">
+        AND fax = #{criteria.fax}
+      </if>
+      <if test="criteria.email__c != null">
+        AND email__c = #{criteria.email__c}
+      </if>
+      <if test="criteria.website != null">
+        AND website LIKE '%' || #{criteria.website} || '%'
+      </if>
+      <if test="criteria.parentid != null">
+        AND parentid = #{criteria.parentid}
+      </if>
+      <if test="criteria.headoffice__c != null">
+        AND headoffice__c = #{criteria.headoffice__c}
+      </if>
+      <if test="criteria.phoneng__c != null">
+        AND phoneng__c = CAST(#{criteria.phoneng__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.faxng__c != null">
+        AND faxng__c = CAST(#{criteria.faxng__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.emailng__c != null">
+        AND emailng__c = CAST(#{criteria.emailng__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.foraccountingnotext__c != null">
+        AND foraccountingnotext__c = #{criteria.foraccountingnotext__c}
+      </if>
+
+      <!-- 店舗名 -->
+      <if test="criteria.shopnametext__c != null">
+        AND shopnametext__c LIKE '%' || #{criteria.shopnametext__c} || '%'
+      </if>
+
+      <!-- 店舗名カナ -->
+      <if test="criteria.shopkanatext__c != null">
+        AND shopkanatext__c LIKE '%' || #{criteria.shopkanatext__c} || '%'
+      </if>
+
+      <if test="criteria.branchofficename__c != null">
+        AND branchofficename__c LIKE '%' || #{criteria.branchofficename__c} || '%'
+      </if>
+      <if test="criteria.branchofficekana__c != null">
+        AND branchofficekana__c LIKE '%' || #{criteria.branchofficekana__c} || '%'
+      </if>
+
+      <if test="criteria.contactng__c != null">
+        AND contactng__c = CAST(#{criteria.contactng__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.alliancearchitect__c != null">
+        AND alliancearchitect__c = CAST(#{criteria.alliancearchitect__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.affiliates__c != null">
+        AND affiliates__c = CAST(#{criteria.affiliates__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.notpayment__c != null">
+        AND notpayment__c = CAST(#{criteria.notpayment__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.bankruptcy__c != null">
+        AND bankruptcy__c = CAST(#{criteria.bankruptcy__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.is_available_r_de_go__c != null">
+        AND is_available_r_de_go__c = CAST(#{criteria.is_available_r_de_go__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.is_available_cms__c != null">
+        AND is_available_cms__c = CAST(#{criteria.is_available_cms__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.is_available_pms__c != null">
+        AND is_available_pms__c = CAST(#{criteria.is_available_pms__c} AS BOOLEAN)
+      </if>
+      <if test="criteria.is_available_iekachi__c != null">
+        AND is_available_iekachi__c = CAST(#{criteria.is_available_iekachi__c} AS BOOLEAN)
+      </if>
+
+      <!-- アーキトレンドCAD権利会員 -->
+      <if test="criteria.architrend_rights__c != null">
+        AND architrend_rights__c = #{criteria.architrend_rights__c}
+      </if>
+
+      <if test="criteria.is_service_delete__c != null">
+        AND is_service_delete__c = CAST(#{criteria.is_service_delete__c} AS BOOLEAN)
+      </if>
+
+      <!-- SFID -->
+      <if test="criteria.sfid != null">
+        AND sfid = #{criteria.sfid}
+      </if>
+
+      <!-- 作成日 -->
+      <if test="criteria.createddate != null">
+        AND createddate = #{criteria.createddate}
+      </if>
+      <if test="criteria.createddate_from != null">
+        AND createddate &gt;= TO_TIMESTAMP(#{criteria.createddate_from}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+      <if test="criteria.createddate_to != null">
+        AND createddate &lt;= TO_TIMESTAMP(#{criteria.createddate_to}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+
+      <!-- システム最終更新日 -->
+      <if test="criteria.systemmodstamp != null">
+        AND systemmodstamp = #{criteria.systemmodstamp}
+      </if>
+      <if test="criteria.systemmodstamp_date_from != null">
+        AND systemmodstamp &gt;= TO_TIMESTAMP(#{criteria.systemmodstamp_date_from}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+      <if test="criteria.systemmodstamp_date_to != null">
+        AND systemmodstamp &lt;= TO_TIMESTAMP(#{criteria.systemmodstamp_date_to}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+
+      
+      <!-- データ作成サービス -->
+      <if test="criteria.created_by_service__c != null">
+        AND created_by_service__c = #{criteria.created_by_service__c}
+      </if>
+
+      <!-- データ更新サービス -->
+      <if test="criteria.last_modified_by_service__c != null">
+        AND last_modified_by_service__c = #{criteria.last_modified_by_service__c}
+      </if>
+
+      <!-- 削除フラグ -->
+      <if test="criteria.isdeleted != null">
+        AND isdeleted = #{criteria.isdeleted}
+      </if>
+
+      <if test="criteria.is_service_delete__c == null">
+        AND is_service_delete__c = false
+      </if>
+      
+    </where>
+  </sql>
+
+</mapper>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head th:replace="portal/layouts/default :: common_header(~{::title}, ~{::link})">
+  <title>サービス一覧 - HPF ポータル</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body id="service">
+  <!-- _top_menu begin -->
+  <div th:replace="portal/layouts/default :: common_top_menu('service')" />
+  <!-- _top_menu end -->
+  
+<div class="d-flex">
+  <!-- _left_menu begin -->
+  <nav th:replace="portal/layouts/default :: common_left_menu('service')" />
+  <!-- _left_menu end -->
+
+  <main role="main" class="flex-grow-1">
+    <div class="container-fluid mt-2">
+      <div class="col-12">
+        <section class="mb-4 mt-4">
+          <h2 class="mb-2 info" data-info="ご契約サービスについての補足説明">ご契約サービス</h2>
+          <p>HyASがご提供する契約加入サービスの一覧です。</p>
+          <section class="row">
+            <a href="https://www.r-de-go.com/" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/r_plus_house.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>R+house</h4>
+                <div th:unless="${user_info.usage_auth_r_de_go} == '利用不可'" class="status active">利用可</div>
+                <div th:if="${user_info.usage_auth_r_de_go} == '利用不可'" class="status inactive">利用不可</div>
+              </div>
+            </a>
+            <a href="https://iekachibox.karekisho.net/karekisho/cplogin.aspx" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/iekachi_box.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>iekachi BOX</h4>
+                <div th:unless="${user_info.usage_auth_iekachi} == '利用不可'" class="status active">利用可</div>
+                <div th:if="${user_info.usage_auth_iekachi} == '利用不可'" class="status inactive">利用不可</div>
+              </div>
+            </a>
+          </section>
+        </section>
+
+        <section class="mb-4 mt-4">
+          <h2 class="mb-2 info" data-info="お知らせについての補足説明">お知らせ</h2>
+          <table class="table table-striped custom-table-style">
+            <tbody>
+              <tr>
+                <td scope="row">2019/07/31</td>
+                <td>
+                  ご連絡<br>
+                  お知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせ
+                </td>
+              </tr>
+              <tr>
+                <td scope="row">2019/07/28</td>
+                <td>
+                  ご連絡<br>
+                  お知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせお知らせ
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="mb-4 mt-4">
+          <h2 class="mb-2 info">ご提供サービス</h2>
+          <p>HyASがご提供するサービスの一覧です。</p>
+          <section class="row">
+            <a href="https://agent-master.jp" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/ams.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>AMS</h4>
+              </div>
+            </a>
+            <a href="https://sys.jfs-kyokai.jp/bios/" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/bios.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>BIOS</h4>
+              </div>
+            </a>
+            <a href="https://blue-print-project.com/" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/bpp.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>BPP</h4>
+              </div>
+            </a>
+            <a href="https://hyas-cms.net" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/cms.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>CMS</h4>
+              </div>
+            </a>
+            <a href="https://hyas-pms.net/login" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/pms.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>PMS</h4>
+              </div>
+            </a>
+            <a href="https://sys.r-plus-house.com/udon/" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/udon.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>UDON</h4>
+              </div>
+            </a>
+            <a href="https://sys.r-plus-house.com/dandoli/" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/dandoli.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>だんどり</h4>
+              </div>
+            </a>
+            <a href="https://myhyaa.jp" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/my_hyaa.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>MY HYAA</h4>
+              </div>
+            </a>
+            <a href="https://www.relife-club.jp/Default.aspx" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/hyaa_fp.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>HYAA FP</h4>
+              </div>
+            </a>
+            <a href="http://plaza.hyas.co.jp" class="d-flex flex-column container-product">
+              <div class="wrapper-image">
+                <img src="/img/service_logo/hyas_plaza_net.png" />
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <h4>HyAS PLAZA Net</h4>
+              </div>
+            </a>
+          </section>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>  
+</body>
+</html>

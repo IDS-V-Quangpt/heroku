@@ -1,0 +1,15 @@
+<svg id="baseline-mail_outline-24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 19.168">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+  </defs>
+  <path id="パス_778" data-name="パス 778" class="cls-1" d="M0,0H18V19.168H0Z"/>
+  <path id="パス_779" data-name="パス 779" class="cls-2" d="M15.5,4H3.5A1.549,1.549,0,0,0,2.007,5.6L2,15.181a1.556,1.556,0,0,0,1.5,1.6h12a1.556,1.556,0,0,0,1.5-1.6V5.6A1.556,1.556,0,0,0,15.5,4Zm0,11.181H3.5V7.195l6,3.993,6-3.993Zm-6-5.591L3.5,5.6h12Z" transform="translate(-0.5 -0.805)"/>
+</svg>

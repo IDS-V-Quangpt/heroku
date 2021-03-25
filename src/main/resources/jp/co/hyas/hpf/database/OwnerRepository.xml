@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.hyas.hpf.database.OwnerRepository">
+
+  <!-- # ================================================== SQL定義 -->
+  <select id="count" resultType="long">
+    SELECT COUNT(*)
+      FROM salesforce.hpf_owner__c AS owner
+    <include refid="findByCriteriaWherePhrase">
+      <property name="alias" value="owner" />
+    </include>
+  </select>
+
+  <select id="search" resultMap="ownerResultMap">
+    SELECT owner.*,
+      <include refid="accountColumnsName">
+        <property name="alias" value="ac"/>
+        <property name="prefix" value="ac_"/>
+      </include>
+      FROM salesforce.hpf_owner__c AS owner
+      LEFT JOIN salesforce.account AS ac ON ac.corporationid__c = owner.corporation_id__c
+    <include refid="findByCriteriaWherePhrase">
+      <property name="alias" value="owner" />
+    </include>
+    <include refid="orderBy">
+      <property name="alias" value="owner"/>
+    </include>
+    LIMIT #{pageable.pageSize}
+    OFFSET #{pageable.offset}
+  </select>
+
+  <select id="findOne" resultMap="ownerResultMap">
+    SELECT owner.*,
+      <include refid="accountColumnsName">
+        <property name="alias" value="ac"/>
+        <property name="prefix" value="ac_"/>
+      </include>
+      FROM salesforce.hpf_owner__c AS owner
+      LEFT JOIN salesforce.account AS ac ON ac.corporationid__c = owner.corporation_id__c
+     WHERE owner.owner_id__c = #{ident}
+       AND owner.is_service_delete__c = FALSE
+  </select>
+
+  <select id="authenticate" resultType="Owner">
+    SELECT *
+      FROM salesforce.hpf_owner__c AS owner
+     WHERE login_name__c = #{auth.owner_user_name}
+       AND is_service_delete__c = false
+  </select>
+
+  <select id="exists" resultType="boolean">
+    SELECT COUNT(*) > 0
+      FROM salesforce.hpf_owner__c AS owner
+    <where>
+      <foreach collection="criteria" index="key" item="value">
+        AND owner.${key} = #{value}
+      </foreach>
+      <if test="except != null">
+        AND owner.owner_id__c != #{except}
+      </if>
+    </where>
+  </select>
+
+
+
+  <!-- # ================================================== 結果セット・リレーション取得定義 -->
+
+  <resultMap id="ownerBase" type="Owner">
+    <id property="id" column="id" />
+    <result property="owner_id__c" column="owner_id__c" />
+    <result property="corporation_id__c" column="corporation_id__c" />
+    <result property="account_id__c" column="account_id__c" />
+    <result property="last_name__c" column="last_name__c" />
+    <result property="first_name__c" column="first_name__c" />
+    <result property="last_name_kana__c" column="last_name_kana__c" />
+    <result property="first_name_kana__c" column="first_name_kana__c" />
+    <result property="owner_company_name__c" column="owner_company_name__c" />
+    <result property="owner_company_name_kana__c" column="owner_company_name_kana__c" />
+    <result property="birthdate__c" column="birthdate__c" />
+    <result property="email1__c" column="email1__c" />
+    <result property="email2__c" column="email2__c" />
+    <result property="tel1__c" column="tel1__c" />
+    <result property="tel2__c" column="tel2__c" />
+    <result property="fax__c" column="fax__c" />
+    <result property="postal_code__c" column="postal_code__c" />
+    <result property="prefecture__c" column="prefecture__c" />
+    <result property="city__c" column="city__c" />
+    <result property="street__c" column="street__c" />
+    <result property="building_name__c" column="building_name__c" />
+    <result property="address_kana__c" column="address_kana__c" />
+    <result property="owner_type__c" column="owner_type__c" />
+    <result property="owner_rank__c" column="owner_rank__c" />
+    <result property="sex__c" column="sex__c" />
+    <result property="job__c" column="job__c" />
+    <result property="income__c" column="income__c" />
+    <result property="representative__c" column="representative__c" />
+    <result property="representative_kana__c" column="representative_kana__c" />
+    <result property="industry__c" column="industry__c" />
+    <result property="capital__c" column="capital__c" />
+    <result property="annual_revenue__c" column="annual_revenue__c" />
+    <result property="branch__c" column="branch__c" />
+    <result property="number_of_employees__c" column="number_of_employees__c" />
+    <result property="login_name__c" column="login_name__c" />
+    <!-- result property="login_password__c" column="login_password__c" / -->
+    <result property="is_service_delete__c" column="is_service_delete__c" />
+    <result property="sfid" column="sfid" />
+    <result property="createdbyid" column="createdbyid" />
+    <result property="lastmodifiedbyid" column="lastmodifiedbyid" />
+    <result property="createddate" column="createddate" />
+    <result property="systemmodstamp" column="systemmodstamp" />
+    <result property="created_by_service__c" column="created_by_service__c" />
+    <result property="last_modified_by_service__c" column="last_modified_by_service__c" />
+    <result property="isdeleted" column="isdeleted" />
+    <result property="name" column="name" />
+  </resultMap>
+
+  <resultMap id="ownerResultMap" type="Owner" extends="ownerBase">
+    <association property="corporation" javaType="hashmap" columnPrefix="ac_">
+      <result property="name" column="name"/>
+      <result property="namekana__c" column="namekana__c"/>
+      <result property="billingstate" column="billingstate"/>
+      <result property="billingcity" column="billingcity"/>
+      <result property="billingstreet" column="billingstreet"/>
+      <result property="buildingname__c" column="buildingname__c"/>
+    </association>
+  </resultMap>
+
+  <!-- # ================================================== SQLパーツ定義 -->
+
+  <!-- account一部フィールド -->
+  <sql id="accountColumnsName">
+    ${alias}.name AS ${prefix}name,
+    ${alias}.namekana__c AS ${prefix}namekana__c,
+    ${alias}.billingstate AS ${prefix}billingstate,
+    ${alias}.billingcity AS ${prefix}billingcity,
+    ${alias}.billingstreet AS ${prefix}billingstreet,
+    ${alias}.buildingname__c AS ${prefix}buildingname__c
+  </sql>
+
+  <sql id="findByCriteriaWherePhrase">
+    <where>
+      <!-- オーナーID -->
+      <if test="criteria.owner_id__c != null">
+        AND ${alias}.owner_id__c IN
+        <foreach collection="criteria.owner_id__c" item="owner_id"
+          open="(" separator="," close=")">
+          #{owner_id}
+        </foreach>
+      </if>
+
+      <!-- 加盟店ID -->
+      <if test="criteria.corporation_id__c != null">
+        AND ${alias}.corporation_id__c = #{criteria.corporation_id__c}
+      </if>
+
+      <!-- 加盟店ID(SFID) -->
+      <if test="criteria.account_id__c != null">
+        AND ${alias}.account_id__c = #{criteria.account_id__c}
+      </if>
+
+      <!-- オーナー姓 -->
+      <if test="criteria.last_name__c != null">
+        AND ${alias}.last_name__c LIKE '%' || #{criteria.last_name__c} || '%'
+      </if>
+
+      <!-- オーナー名 -->
+      <if test="criteria.first_name__c != null">
+        AND ${alias}.first_name__c LIKE '%' || #{criteria.first_name__c} || '%'
+      </if>
+
+      <!-- オーナー姓カナ -->
+      <if test="criteria.last_name_kana__c != null">
+        AND ${alias}.last_name_kana__c LIKE '%' || #{criteria.last_name_kana__c} || '%'
+      </if>
+
+      <!-- オーナー名カナ -->
+      <if test="criteria.first_name_kana__c != null">
+        AND ${alias}.first_name_kana__c LIKE '%' || #{criteria.first_name_kana__c} || '%'
+      </if>
+
+      <!-- オーナー法人 -->
+      <if test="criteria.owner_company_name__c != null">
+        AND ${alias}.owner_company_name__c LIKE '%' || #{criteria.owner_company_name__c} || '%'
+      </if>
+
+      <!-- オーナー法人カナ -->
+      <if test="criteria.owner_company_name_kana__c != null">
+        AND ${alias}.owner_company_name_kana__c LIKE '%' || #{criteria.owner_company_name_kana__c} || '%'
+      </if>
+
+      <!-- 生年月日 -->
+      <if test="criteria.birthdate__c != null">
+        AND ${alias}.birthdate__c = #{criteria.birthdate__c}
+      </if>
+
+      <!-- Email1 -->
+      <if test="criteria.email1__c != null">
+        AND ${alias}.email1__c LIKE '%' || #{criteria.email1__c} || '%'
+      </if>
+
+      <!-- Email2 -->
+      <if test="criteria.email2__c != null">
+        AND ${alias}.email2__c LIKE '%' || #{criteria.email2__c} || '%'
+      </if>
+
+      <!-- 電話番号1 -->
+      <if test="criteria.tel1__c != null">
+        AND ${alias}.tel1__c LIKE '%' || #{criteria.tel1__c} || '%'
+      </if>
+
+      <!-- 電話番号2 -->
+      <if test="criteria.tel2__c != null">
+        AND ${alias}.tel2__c LIKE '%' || #{criteria.tel2__c} || '%'
+      </if>
+
+      <!-- FAX -->
+      <if test="criteria.fax__c != null">
+        AND ${alias}.fax__c LIKE '%' || #{criteria.fax__c} || '%'
+      </if>
+
+      <!-- 郵便番号 -->
+      <if test="criteria.postal_code__c != null">
+        AND ${alias}.postal_code__c LIKE #{criteria.postal_code__c} || '%'
+      </if>
+
+      <!-- 都道府県 -->
+      <if test="criteria.prefecture__c != null">
+        AND ${alias}.prefecture__c LIKE #{criteria.prefecture__c} || '%'
+      </if>
+
+      <!-- 市町村名 -->
+      <if test="criteria.city__c != null">
+        AND ${alias}.city__c LIKE #{criteria.city__c} || '%'
+      </if>
+
+      <!-- 町名・地番など -->
+      <if test="criteria.street__c != null">
+        AND ${alias}.street__c LIKE '%' || #{criteria.street__c} || '%'
+      </if>
+
+      <!-- ビル・マンション名 -->
+      <if test="criteria.building_name__c != null">
+        AND ${alias}.building_name__c LIKE '%' || #{criteria.building_name__c} || '%'
+      </if>
+
+      <!-- 住所カナ -->
+      <if test="criteria.address_kana__c != null">
+        AND ${alias}.address_kana__c LIKE '%' || #{criteria.address_kana__c} || '%'
+      </if>
+
+      <!-- オーナー種別 -->
+      <if test="criteria.owner_type__c != null">
+        AND ${alias}.owner_type__c = #{criteria.owner_type__c}
+      </if>
+
+      <!-- オーナーランク -->
+      <if test="criteria.owner_rank__c != null">
+        AND ${alias}.owner_rank__c = #{criteria.owner_rank__c}
+      </if>
+
+      <!-- 性別 -->
+      <if test="criteria.sex__c != null">
+        AND ${alias}.sex__c = #{criteria.sex__c}
+      </if>
+
+      <!-- 職業 -->
+      <if test="criteria.job__c != null">
+        AND ${alias}.job__c LIKE '%' || #{criteria.job__c} || '%'
+      </if>
+
+      <!-- 所得 -->
+      <if test="criteria.income__c != null">
+        AND ${alias}.income__c LIKE '%' || #{criteria.income__c} || '%'
+      </if>
+
+      <!-- 代表者名 -->
+      <if test="criteria.representative__c != null">
+        AND ${alias}.representative__c LIKE '%' || #{criteria.representative__c} || '%'
+      </if>
+
+      <!-- 代表者名カナ -->
+      <if test="criteria.representative_kana__c != null">
+        AND ${alias}.representative_kana__c LIKE '%' || #{criteria.representative_kana__c} || '%'
+      </if>
+
+      <!-- 業種 -->
+      <if test="criteria.industry__c != null">
+        AND ${alias}.industry__c LIKE '%' || #{criteria.industry__c} || '%'
+      </if>
+
+      <!-- 資本金 -->
+      <if test="criteria.capital__c != null">
+        AND ${alias}.capital__c = #{criteria.capital__c}
+      </if>
+      <if test="criteria.capital__c_from != null">
+        AND ${alias}.capital__c &gt;= #{criteria.capital__c_from}
+      </if>
+      <if test="criteria.capital__c_to != null">
+        AND ${alias}.capital__c &lt;= #{criteria.capital__c_to}
+      </if>
+
+      <!-- 売上高 -->
+      <if test="criteria.annual_revenue__c != null">
+        AND ${alias}.annual_revenue__c = #{criteria.annual_revenue__c}
+      </if>
+      <if test="criteria.annual_revenue__c_from != null">
+        AND ${alias}.annual_revenue__c &gt;= #{criteria.annual_revenue__c_from}
+      </if>
+      <if test="criteria.annual_revenue__c_to != null">
+        AND ${alias}.annual_revenue__c &lt;= #{criteria.annual_revenue__c_to}
+      </if>
+
+      <!-- 事業所 -->
+      <if test="criteria.branch__c != null">
+        AND ${alias}.branch__c LIKE '%' || #{criteria.branch__c} || '%'
+      </if>
+
+      <!-- 従業員数 -->
+      <if test="criteria.number_of_employees__c != null">
+        AND ${alias}.number_of_employees__c = #{criteria.number_of_employees__c}
+      </if>
+      <if test="criteria.number_of_employees__c_from != null">
+        AND ${alias}.number_of_employees__c &gt;= #{criteria.number_of_employees__c_from}
+      </if>
+      <if test="criteria.number_of_employees__c_to != null">
+        AND ${alias}.number_of_employees__c &lt;= #{criteria.number_of_employees__c_to}
+      </if>
+
+      <!-- ログインユーザー名 -->
+      <if test="criteria.login_name__c != null">
+        AND ${alias}.login_name__c = #{criteria.login_name__c}
+      </if>
+
+      <!-- システム最終更新日 -->
+      <if test="criteria.systemmodstamp != null">
+        AND ${alias}.systemmodstamp = CAST(#{criteria.systemmodstamp} AS TIMESTAMP)
+      </if>
+      <if test="criteria.systemmodstamp_date_from != null">
+        AND ${alias}.systemmodstamp &gt;= CAST(#{criteria.systemmodstamp_date_from} AS TIMESTAMP)
+      </if>
+      <if test="criteria.systemmodstamp_date_to != null">
+        AND ${alias}.systemmodstamp &lt;= CAST(#{criteria.systemmodstamp_date_to} AS TIMESTAMP)
+      </if>
+
+      <!-- データ作成サービス -->
+      <if test="criteria.created_by_service__c != null">
+        AND ${alias}.created_by_service__c = #{criteria.created_by_service__c}
+      </if>
+
+      <!-- データ更新サービス -->
+      <if test="criteria.last_modified_by_service__c != null">
+        AND ${alias}.last_modified_by_service__c = #{criteria.last_modified_by_service__c}
+      </if>
+
+      <!-- 削除フラグ -->
+      <if test="criteria.isdeleted != null">
+        AND ${alias}.isdeleted = #{criteria.isdeleted}
+      </if>
+
+      AND ${alias}.is_service_delete__c = false
+    </where>
+  </sql>
+
+  <sql id="orderBy">
+    <foreach item="item" collection="pageable.sort" open="ORDER BY" close="" separator=",">
+      ${alias}.${item.property} ${item.direction}
+    </foreach>
+  </sql>
+
+</mapper>

@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.hyas.hpf.database.ContactRepository">
+
+  <!-- # ================================================== SQL定義 -->
+  <select id="count" resultType="long">
+    SELECT COUNT(*)
+      FROM salesforce.contact AS ct
+    <include refid="findByCriteriaWherePhrase">
+      <property name="alias" value="ct"/>
+    </include>
+  </select>
+
+  <select id="search" resultMap="contactResultMap">
+    SELECT ct.*,
+      <include refid="accountColumnsName">
+        <property name="alias" value="ac"/>
+        <property name="prefix" value="ac_"/>
+      </include>
+      FROM salesforce.contact AS ct
+      LEFT JOIN salesforce.account AS ac ON ac.corporationid__c = ct.corporationid__c
+    <include refid="findByCriteriaWherePhrase">
+      <property name="alias" value="ct"/>
+    </include>
+    <include refid="orderBy">
+      <property name="alias" value="ct"/>
+    </include>
+    LIMIT  #{pageable.pageSize}
+    OFFSET #{pageable.offset}
+  </select>
+
+  <select id="findOne" resultMap="contactResultMap">
+    SELECT ct.*,
+      <include refid="accountColumnsName">
+        <property name="alias" value="ac"/>
+        <property name="prefix" value="ac_"/>
+      </include>
+      FROM salesforce.contact AS ct
+      LEFT JOIN salesforce.account AS ac ON ac.corporationid__c = ct.corporationid__c
+     WHERE ct.contact_id__c = #{ident}
+       AND ct.is_service_delete__c = FALSE
+  </select>
+
+  <!-- # ================================================== 結果セット・リレーション取得定義 -->
+
+  <resultMap id="contactBase" type="Contact">
+    <id property="id" column="id" />
+    <result property="contact_id__c" column="contact_id__c" />
+    <result property="accountid" column="accountid" />
+    <result property="corporationid__c" column="corporationid__c" />
+    <result property="hpf_permission__c" column="hpf_permission__c" />
+    <result property="contact_kind__c" column="contact_kind__c" />
+    <result property="is_approval_check__c" column="is_approval_check__c" />
+    <result property="is_invalid__c" column="is_invalid__c" />
+    <result property="invalid_reason__c" column="invalid_reason__c" />
+    <result property="mailingpostalcode" column="mailingpostalcode" />
+    <result property="mailingstate" column="mailingstate" />
+    <result property="mailingcity" column="mailingcity" />
+    <result property="mailingstreet" column="mailingstreet" />
+    <result property="buildingname__c" column="buildingname__c" />
+    <result property="firstname" column="firstname" />
+    <result property="lastname" column="lastname" />
+    <result property="firstnamekana__c" column="firstnamekana__c" />
+    <result property="lastnamekana__c" column="lastnamekana__c" />
+    <result property="name" column="name" />
+    <result property="title" column="title" />
+    <result property="belongbranchoffice__c" column="belongbranchoffice__c" />
+    <result property="department" column="department" />
+    <result property="phone" column="phone" />
+    <result property="donotcall" column="donotcall" />
+    <result property="fax" column="fax" />
+    <result property="hasoptedoutoffax" column="hasoptedoutoffax" />
+    <result property="email" column="email" />
+    <result property="hasoptedoutofemail" column="hasoptedoutofemail" />
+    <result property="mobilephone" column="mobilephone" />
+    <result property="mobilephoneng__c" column="mobilephoneng__c" />
+    <result property="mobilemail__c" column="mobilemail__c" />
+    <result property="mobilemailng__c" column="mobilemailng__c" />
+    <result property="architect_office_url__c" column="architect_office_url__c" />
+    <result property="profile_movie_url__c" column="profile_movie_url__c" />
+    <result property="profile_file_key__c" column="profile_file_key__c" />
+    <result property="representativename__c" column="representativename__c" />
+    <result property="retirement__c" column="retirement__c" />
+    <result property="plaza__c" column="plaza__c" />
+    <result property="plazamail__c" column="plazamail__c" />
+    <result property="view__c" column="view__c" />
+    <result property="viewmail__c" column="viewmail__c" />
+    
+    
+    <result property="needsmailmagazinrplushouse__c" column="needsmailmagazinrplushouse__c" />
+    <result property="needsmailmagaziniekachiforrplusadm__c" column="needsmailmagaziniekachiforrplusadm__c" />
+    <result property="needsmailmagaziniekachiforippan__c" column="needsmailmagaziniekachiforippan__c" />
+    <result property="needsmailmagaziniekachibox__c" column="needsmailmagaziniekachibox__c" />
+    <result property="needsmailmagazinfp__c" column="needsmailmagazinfp__c" />
+    <result property="needsmailmagazinfsm__c" column="needsmailmagazinfsm__c" />
+    <result property="needsmailmagazinadm__c" column="needsmailmagazinadm__c" />
+    <result property="needsmailmagazinams__c" column="needsmailmagazinams__c" />
+    <result property="needsmailmagazincms__c" column="needsmailmagazincms__c" />
+    <result property="needsmailmagazinhysp__c" column="needsmailmagazinhysp__c" />
+    <result property="needsmailmagazintochisma__c" column="needsmailmagazintochisma__c" />
+    <result property="needsmailmagazintmd__c" column="needsmailmagazintmd__c" />
+    <result property="needsmailmagazingg__c" column="needsmailmagazingg__c" />
+    <result property="needsmailmagazinhc__c" column="needsmailmagazinhc__c" />
+    <result property="needsmailmagazinhih__c" column="needsmailmagazinhih__c" />
+    <result property="needsmailmagazinws__c" column="needsmailmagazinws__c" />
+    <result property="needsmailmagazinstay__c" column="needsmailmagazinstay__c" />
+    <result property="needsmailmagazindecos__c" column="needsmailmagazindecos__c" />
+    <result property="needsmailmagazinpms__c" column="needsmailmagazinpms__c" />
+    <result property="needsmailmagazintm__c" column="needsmailmagazintm__c" />
+    <result property="needsmailmagazinrpluskenchikuka__c" column="needsmailmagazinrpluskenchikuka__c" />
+    <result property="needsmailmagazinrplusic__c" column="needsmailmagazinrplusic__c" />
+
+
+    <result property="role_of_r_de_go__c" column="role_of_r_de_go__c" />
+    <result property="role_of_cms__c" column="role_of_cms__c" />
+    <result property="role_of_pms__c" column="role_of_pms__c" />
+    <result property="role_of_iekachi__c" column="role_of_iekachi__c" />
+    <result property="r_house_certificate_number__c" column="r_house_certificate_number__c" />
+    <result property="r_house_construction_supervisor__c" column="r_house_construction_supervisor__c" />
+    <result property="r_house_certificate_remove__c" column="r_house_certificate_remove__c" />
+    <result property="data_migration_id__c" column="data_migration_id__c" />
+    <result property="is_service_delete__c" column="is_service_delete__c" />
+    <result property="sfid" column="sfid" />
+    <result property="createdbyid" column="createdbyid" />
+    <result property="lastmodifiedbyid" column="lastmodifiedbyid" />
+    <result property="createddate" column="createddate" />
+    <result property="systemmodstamp" column="systemmodstamp" />
+    <result property="created_by_service__c" column="created_by_service__c" />
+    <result property="last_modified_by_service__c" column="last_modified_by_service__c" />
+    <result property="isdeleted" column="isdeleted" />
+  </resultMap>
+
+  <resultMap id="contactResultMap" type="Contact" extends="contactBase">
+    <association property="corporation" javaType="hashmap" columnPrefix="ac_">
+      <result property="name" column="name"/>
+      <result property="namekana__c" column="namekana__c"/>
+      <result property="billingstate" column="billingstate"/>
+      <result property="billingcity" column="billingcity"/>
+      <result property="billingstreet" column="billingstreet"/>
+      <result property="buildingname__c" column="buildingname__c"/>
+    </association>
+  </resultMap>
+
+  <!-- # ================================================== SQLパーツ定義 -->
+
+  <!-- account一部フィールド -->
+  <sql id="accountColumnsName">
+    ${alias}.name AS ${prefix}name,
+    ${alias}.namekana__c AS ${prefix}namekana__c,
+    ${alias}.billingstate AS ${prefix}billingstate,
+    ${alias}.billingcity AS ${prefix}billingcity,
+    ${alias}.billingstreet AS ${prefix}billingstreet,
+    ${alias}.buildingname__c AS ${prefix}buildingname__c
+  </sql>
+
+  <sql id="findByCriteriaWherePhrase">
+    <where>
+      <if test="criteria.contact_id__c != null">
+        AND ${alias}.contact_id__c IN
+        <foreach collection="criteria.contact_id__c" item="contact_id"
+          open="(" separator="," close=")">
+          #{contact_id}
+        </foreach>
+      </if>
+
+      <if test="criteria.accountid != null">
+        AND ${alias}.accountid = #{criteria.accountid}
+      </if>
+
+      <if test="criteria.corporationid__c != null">
+        AND ${alias}.corporationid__c = #{criteria.corporationid__c}
+      </if>
+
+      <if test="criteria.hpf_permission__c != null">
+        AND ${alias}.hpf_permission__c IN
+        <foreach collection="criteria.hpf_permission__c" item="item"
+          open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+
+      <if test="criteria.contact_kind__c != null">
+        AND ${alias}.contact_kind__c = #{criteria.contact_kind__c}
+      </if>
+
+      <if test="criteria.invalid_reason__c != null">
+        AND ${alias}.invalid_reason__c LIKE '%' || #{criteria.invalid_reason__c} || '%'
+      </if>
+
+      <if test="criteria.mailingpostalcode != null">
+        AND ${alias}.mailingpostalcode LIKE #{criteria.mailingpostalcode} || '%'
+      </if>
+
+      <if test="criteria.mailingstate != null">
+        AND ${alias}.mailingstate LIKE #{criteria.mailingstate} || '%'
+      </if>
+
+      <if test="criteria.mailingcity != null">
+        AND ${alias}.mailingcity LIKE #{criteria.mailingcity} || '%'
+      </if>
+
+      <if test="criteria.mailingstreet != null">
+        AND ${alias}.mailingstreet LIKE '%' || #{criteria.mailingstreet} || '%'
+      </if>
+
+      <if test="criteria.buildingname__c != null">
+        AND ${alias}.buildingname__c LIKE '%' || #{criteria.buildingname__c} || '%'
+      </if>
+
+      <if test="criteria.firstname != null">
+        AND ${alias}.firstname LIKE '%' || #{criteria.firstname} || '%'
+      </if>
+
+      <if test="criteria.lastname != null">
+        AND ${alias}.lastname LIKE '%' || #{criteria.lastname} || '%'
+      </if>
+
+      <if test="criteria.firstnamekana__c != null">
+        AND ${alias}.firstnamekana__c LIKE '%' || #{criteria.firstnamekana__c} || '%'
+      </if>
+
+      <if test="criteria.lastnamekana__c != null">
+        AND ${alias}.lastnamekana__c LIKE '%' || #{criteria.lastnamekana__c} || '%'
+      </if>
+
+      <if test="criteria.title != null">
+        AND ${alias}.title LIKE '%' || #{criteria.title} || '%'
+      </if>
+
+      <if test="criteria.belongbranchoffice__c != null">
+        AND ${alias}.belongbranchoffice__c LIKE '%' || #{criteria.belongbranchoffice__c} || '%'
+      </if>
+
+      <if test="criteria.department != null">
+        AND ${alias}.department LIKE '%' || #{criteria.department} || '%'
+      </if>
+
+      <if test="criteria.phone != null">
+        AND ${alias}.phone LIKE '%' || #{criteria.phone} || '%'
+      </if>
+
+      <if test="criteria.donotcall != null">
+        AND ${alias}.donotcall = #{criteria.donotcall}
+      </if>
+
+      <if test="criteria.fax != null">
+        AND ${alias}.fax LIKE '%' || #{criteria.fax} || '%'
+      </if>
+
+      <if test="criteria.hasoptedoutoffax != null">
+        AND ${alias}.hasoptedoutoffax = #{criteria.hasoptedoutoffax}
+      </if>
+
+      <if test="criteria.email != null">
+        AND ${alias}.email LIKE '%' || #{criteria.email} || '%'
+      </if>
+
+      <if test="criteria.hasoptedoutofemail != null">
+        AND ${alias}.hasoptedoutofemail = #{criteria.hasoptedoutofemail}
+      </if>
+
+      <if test="criteria.mobilephone != null">
+        AND ${alias}.mobilephone LIKE '%' || #{criteria.mobilephone} || '%'
+      </if>
+
+      <if test="criteria.mobilephoneng__c != null">
+        AND ${alias}.mobilephoneng__c = #{criteria.mobilephoneng__c}
+      </if>
+
+      <if test="criteria.mobilemail__c != null">
+        AND ${alias}.mobilemail__c LIKE '%' || #{criteria.mobilemail__c} || '%'
+      </if>
+      <if test="criteria.mobilemailng__c != null">
+        AND ${alias}.mobilemailng__c = #{criteria.mobilemailng__c}
+      </if>
+
+      <if test="criteria.representativename__c != null">
+        AND ${alias}.representativename__c = #{criteria.representativename__c}
+      </if>
+
+      <if test="criteria.retirement__c != null">
+        AND ${alias}.retirement__c = #{criteria.retirement__c}
+      </if>
+
+      <if test="criteria.plaza__c != null">
+        AND ${alias}.plaza__c = #{criteria.plaza__c}
+      </if>
+
+      <if test="criteria.plazamail__c != null">
+        AND ${alias}.plazamail__c = #{criteria.plazamail__c}
+      </if>
+
+      <if test="criteria.view__c != null">
+        AND ${alias}.view__c = #{criteria.view__c}
+      </if>
+
+      <if test="criteria.viewmail__c != null">
+        AND ${alias}.viewmail__c = #{criteria.viewmail__c}
+      </if>
+
+
+      <if test="criteria.needsmailmagazinrplushouse__c != null">
+        AND ${alias}.needsmailmagazinrplushouse__c = #{criteria.needsmailmagazinrplushouse__c}
+      </if>
+
+      <if test="criteria.needsmailmagaziniekachiforrplusadm__c != null">
+        AND ${alias}.needsmailmagaziniekachiforrplusadm__c = #{criteria.needsmailmagaziniekachiforrplusadm__c}
+      </if>
+
+      <if test="criteria.needsmailmagaziniekachiforippan__c != null">
+        AND ${alias}.needsmailmagaziniekachiforippan__c = #{criteria.needsmailmagaziniekachiforippan__c}
+      </if>
+
+      <if test="criteria.needsmailmagaziniekachibox__c != null">
+        AND ${alias}.needsmailmagaziniekachibox__c = #{criteria.needsmailmagaziniekachibox__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinfp__c != null">
+        AND ${alias}.needsmailmagazinfp__c = #{criteria.needsmailmagazinfp__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinfsm__c != null">
+        AND ${alias}.needsmailmagazinfsm__c = #{criteria.needsmailmagazinfsm__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinadm__c != null">
+        AND ${alias}.needsmailmagazinadm__c = #{criteria.needsmailmagazinadm__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinams__c != null">
+        AND ${alias}.needsmailmagazinams__c = #{criteria.needsmailmagazinams__c}
+      </if>
+
+      <if test="criteria.needsmailmagazincms__c != null">
+        AND ${alias}.needsmailmagazincms__c = #{criteria.needsmailmagazincms__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinhysp__c != null">
+        AND ${alias}.needsmailmagazinhysp__c = #{criteria.needsmailmagazinhysp__c}
+      </if>
+
+      <if test="criteria.needsmailmagazintochisma__c != null">
+        AND ${alias}.needsmailmagazintochisma__c = #{criteria.needsmailmagazintochisma__c}
+      </if>
+
+      <if test="criteria.needsmailmagazintmd__c != null">
+        AND ${alias}.needsmailmagazintmd__c = #{criteria.needsmailmagazintmd__c}
+      </if>
+
+      <if test="criteria.needsmailmagazingg__c != null">
+        AND ${alias}.needsmailmagazingg__c = #{criteria.needsmailmagazingg__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinhc__c != null">
+        AND ${alias}.needsmailmagazinhc__c = #{criteria.needsmailmagazinhc__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinhih__c != null">
+        AND ${alias}.needsmailmagazinhih__c = #{criteria.needsmailmagazinhih__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinws__c != null">
+        AND ${alias}.needsmailmagazinws__c = #{criteria.needsmailmagazinws__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinstay__c != null">
+        AND ${alias}.needsmailmagazinstay__c = #{criteria.needsmailmagazinstay__c}
+      </if>
+
+      <if test="criteria.needsmailmagazindecos__c != null">
+        AND ${alias}.needsmailmagazindecos__c = #{criteria.needsmailmagazindecos__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinpms__c != null">
+        AND ${alias}.needsmailmagazinpms__c = #{criteria.needsmailmagazinpms__c}
+      </if>
+
+      <if test="criteria.needsmailmagazintm__c != null">
+        AND ${alias}.needsmailmagazintm__c = #{criteria.needsmailmagazintm__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinrpluskenchikuka__c != null">
+        AND ${alias}.needsmailmagazinrpluskenchikuka__c = #{criteria.needsmailmagazinrpluskenchikuka__c}
+      </if>
+
+      <if test="criteria.needsmailmagazinrplusic__c != null">
+        AND ${alias}.needsmailmagazinrplusic__c = #{criteria.needsmailmagazinrplusic__c}
+      </if>
+
+
+      <if test="criteria.role_of_r_de_go__c != null">
+        AND ${alias}.role_of_r_de_go__c IN
+        <foreach collection="criteria.role_of_r_de_go__c" item="item"
+          open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+
+      <if test="criteria.role_of_cms__c != null">
+        AND ${alias}.role_of_cms__c IN
+        <foreach collection="criteria.role_of_cms__c" item="item"
+          open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      
+      <if test="criteria.role_of_pms__c != null">
+        AND ${alias}.role_of_pms__c IN
+        <foreach collection="criteria.role_of_pms__c" item="item"
+          open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+
+      <if test="criteria.role_of_iekachi__c != null">
+        AND ${alias}.role_of_iekachi__c IN
+        <foreach collection="criteria.role_of_iekachi__c" item="item"
+          open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+
+      <!-- R+house施工責任者修了証番号 -->
+      <if test="criteria.r_house_certificate_number__c != null">
+        AND ${alias}.r_house_certificate_number__c = #{criteria.r_house_certificate_number__c}
+      </if>
+
+      <!-- R+house施工責任者区分 -->
+      <if test="criteria.r_house_construction_supervisor__c != null">
+        AND ${alias}.r_house_construction_supervisor__c = #{criteria.r_house_construction_supervisor__c}
+      </if>
+
+      <!-- R+house施工責任者認定削除 -->
+      <if test="criteria.r_house_certificate_remove__c != null">
+        AND ${alias}.r_house_certificate_remove__c = #{criteria.r_house_certificate_remove__c}
+      </if>
+
+      <!-- サービス削除フラグ -->
+      <if test="criteria.is_service_delete__c != null">
+        AND ${alias}.is_service_delete__c = #{criteria.is_service_delete__c}
+      </if>
+
+      <!-- SFID -->
+      <if test="criteria.sfid != null">
+        AND ${alias}.sfid = #{criteria.sfid}
+      </if>
+
+      <!-- 作成日 -->
+      <if test="criteria.createddate != null">
+        AND ${alias}.createddate = #{criteria.createddate}
+      </if>
+      <if test="criteria.createddate_from != null">
+        AND ${alias}.createddate &gt;= TO_TIMESTAMP(#{criteria.createddate_from}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+      <if test="criteria.createddate_to != null">
+        AND ${alias}.createddate &lt;= TO_TIMESTAMP(#{criteria.createddate_to}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+
+      <!-- システム最終更新日 -->
+      <if test="criteria.systemmodstamp != null">
+        AND ${alias}.systemmodstamp = #{criteria.systemmodstamp}
+      </if>
+      <if test="criteria.systemmodstamp_date_from != null">
+        AND ${alias}.systemmodstamp &gt;= TO_TIMESTAMP(#{criteria.systemmodstamp_date_from}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+      <if test="criteria.systemmodstamp_date_to != null">
+        AND ${alias}.systemmodstamp &lt;= TO_TIMESTAMP(#{criteria.systemmodstamp_date_to}, 'YYYY-MM-DD HH24:MI:SS')
+      </if>
+
+      <!-- データ作成サービス -->
+      <if test="criteria.created_by_service__c != null">
+        AND ${alias}.created_by_service__c = #{criteria.created_by_service__c}
+      </if>
+
+      <!-- データ更新サービス -->
+      <if test="criteria.last_modified_by_service__c != null">
+        AND ${alias}.last_modified_by_service__c = #{criteria.last_modified_by_service__c}
+      </if>
+
+      <!-- 削除フラグ -->
+      <if test="criteria.isdeleted != null">
+        AND ${alias}.isdeleted = #{criteria.isdeleted}
+      </if>
+
+      <if test="criteria.is_service_delete__c == null">
+        AND ${alias}.is_service_delete__c = false
+      </if>
+    </where>
+  </sql>
+
+  <sql id="orderBy">
+    <foreach item="item" collection="pageable.sort" open="ORDER BY" close="" separator=",">
+      ${alias}.${item.property} ${item.direction}
+    </foreach>
+  </sql>
+
+</mapper>

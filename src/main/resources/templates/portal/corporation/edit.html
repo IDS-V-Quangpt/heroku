@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head th:replace="portal/layouts/default :: common_header(~{::title}, ~{::link})">
+  <title>法人情報変更 - HPF ポータル</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+  <!-- _top_menu begin -->
+  <div th:replace="portal/layouts/default :: common_top_menu('corp')" />
+  <!-- _top_menu end -->
+
+  <div class="d-flex">
+    <!-- _left_menu begin -->
+    <nav th:replace="portal/layouts/default :: common_left_menu('corp')" />
+    <!-- _left_menu end -->
+    
+    <main role="main" class="flex-grow-1">
+    <div class="container mt-4 mb-4 pt-3 pb-4">
+      <div class="col-12">
+        <section class="">
+          <div>
+            <h2 class="info" data-info="法人情報を変更できます。,情報の変更には事務局の承認が必要となりますので、反映にはお時間をいただくことがございます。" >法人情報の変更</h2>
+            <!--<p>法人情報の変更はHyASの承認作業を必要とするため反映までお時間をいただきます。</p>-->
+          </div>
+
+          <div class="row _edit_area">
+            <div class="col-md-12 order-md-1">
+              <div class="alert alert-warning" role="alert" th:if="${account_wait != null}">
+                現在更新申請中です。
+              </div>
+              <form method="post" class="needs-validation" th:object="${accountWaitForm}" novalidate="">
+                
+                <h3 class="mt-2">アカウント情報</h3>
+                <!--
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 mb-3">
+                    <label for="corporationid__c">法人ID</label>
+                    <input id="corporationid__c" name="corporationid__c" class="form-control" type="text" th:value="${account.corporationid__c}" readonly>
+                  </div>
+                </div>
+                -->
+                <input type="hidden" name="corporationid__c" th:value="${account.corporationid__c}">
+                <div class="row" th:if="${headaccount}">
+                  <div class="col-md-3 mb-3">
+                    <label for="headoffice2__c">本店ID</label>
+                    <input id="headoffice2__c" name="headoffice2__c" class="form-control" type="text" th:value="${headaccount.corporationid__c}" disabled>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="headoffice__c">本店</label>
+                    <input id="headoffice__c" name="headoffice__c" class="form-control" type="text" th:value="${headaccount.shopnametext__c}" disabled>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 mb-3">
+                    <label for="shopnametext__c">店舗名</label>
+                    <input id="shopnametext__c" name="shopnametext__c" class="form-control" type="text" th:value="${account.shopnametext__c}" disabled>
+                  </div>
+                  <div class="col-lg-3 col-md-4 mb-3">
+                    <label for="shopkanatext__c">店舗名カナ</label>
+                    <input id="shopkanatext__c" name="shopkanatext__c" class="form-control" type="text" th:value="${account.shopkanatext__c}" disabled>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-3 col-md-4 mb-3">
+                    <label for="name__c">法人名</label>
+                    <input id="name__c" name="name__c" type="text" class="form-control" placeholder="例) XXXXXXXXXXXXX"
+                     th:classappend="${#fields.hasErrors('name__c')} ? 'is-invalid' : ''" th:field="*{name__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{name__c}"></div>
+                  </div>
+                  <div class="col-lg-3 col-md-4 mb-3">
+                    <label for="name_kana__c">法人名カナ</label>
+                    <input id="name_kana__c" name="name_kana__c" type="text" class="form-control" placeholder="例) XXXXXXXXXXXXX"
+                     th:classappend="${#fields.hasErrors('name_kana__c')} ? 'is-invalid' : ''" th:field="*{name_kana__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{name_kana__c}"></div>
+                  </div>
+                </div>
+                
+                <h3 class="mt-2">住所</h3>
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="billingpostalcode__c">郵便番号</label>
+                    <input id="billingpostalcode__c" name="billingpostalcode__c" type="text" class="form-control" placeholder="999-9999"
+                     th:classappend="${#fields.hasErrors('billingpostalcode__c')} ? 'is-invalid' : ''" th:field="*{billingpostalcode__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{billingpostalcode__c}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="billingstate__c">都道府県</label>
+
+                    <select id="billingstate__c" name="billingstate__c" class="custom-select d-block w-100"
+                     th:classappend="${#fields.hasErrors('billingstate__c')} ? 'is-invalid' : ''" required="">
+                      <option value=""></option>
+                      <option th:each="pref : ${prefectures}" th:value="${pref}" th:selected="${pref}==*{billingstate__c}" th:inline="text">[[${pref}]]</option>
+                    </select>
+                    <div class="invalid-feedback" th:errors="*{billingstate__c}"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="billingcity__c">市区郡</label>
+                    <input id="billingcity__c" name="billingcity__c" type="text" class="form-control" placeholder="例) XX市"
+                     th:classappend="${#fields.hasErrors('billingcity__c')} ? 'is-invalid' : ''" th:field="*{billingcity__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{billingcity__c}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="billingstreet__c">町名・番地</label>
+                    <input id="billingstreet__c" name="billingstreet__c" type="text" class="form-control" placeholder="例) XX町"
+                     th:classappend="${#fields.hasErrors('billingstreet__c')} ? 'is-invalid' : ''" th:field="*{billingstreet__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{billingstreet__c}"></div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="buildingname__c">ビル・マンション名</label>
+                    <input id="buildingname__c" name="buildingname__c" type="text" class="form-control" placeholder="例) XXビル"
+                     th:classappend="${#fields.hasErrors('buildingname__c')} ? 'is-invalid' : ''" th:field="*{buildingname__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{buildingname__c}"></div>
+                  </div>
+                </div>
+                
+                <h3 class="mt-2">連絡先</h3>
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="phone__c">TEL</label>
+                    <input id="phone__c" name="phone__c" type="text" class="form-control" placeholder="099-999-9999"
+                     th:classappend="${#fields.hasErrors('phone__c')} ? 'is-invalid' : ''" th:field="*{phone__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{phone__c}"></div>
+                  </div>
+                  <div class="col-md-3 mb-3">
+                    <label for="fax__c">Fax</label>
+                    <input id="fax__c" name="fax__c" type="text" class="form-control" placeholder="099-999-9999"
+                     th:classappend="${#fields.hasErrors('fax__c')} ? 'is-invalid' : ''" th:field="*{fax__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{fax__c}"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="email__c">Email</label>
+                    <input id="email__c" name="email__c" type="text" class="form-control" placeholder="sample@example.com"
+                     th:classappend="${#fields.hasErrors('email__c')} ? 'is-invalid' : ''" th:field="*{email__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{email__c}"></div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="website__c">URL</label>
+                    <input id="website__c" name="website__c" type="text" class="form-control" placeholder="http://www.example.com/"
+                     th:classappend="${#fields.hasErrors('website__c')} ? 'is-invalid' : ''" th:field="*{website__c}" required="">
+                    <div class="invalid-feedback" th:errors="*{website__c}"></div>
+                  </div>
+                </div>
+                
+                <div class="_page_title mt-2 edit-perm">
+                  <div class="row">
+                    <div class="col"><h2>システム利用権限設定</h2></div>
+                  </div>
+                </div>
+                <h3 class="mt-2">利用権限</h3>
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="is_available_r_de_go__c">RでGo利用権限</label>
+                    <input id="is_available_r_de_go__c" name="is_available_r_de_go__c" class="form-control" type="text" th:value="${account.is_available_r_de_go__c} ? '利用可' : '利用不可'" disabled>
+                  </div>
+                </div>
+<!--                
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="is_available_cms__c">CMS利用権限</label>
+                    <input id="is_available_cms__c" name="is_available_cms__c" class="form-control" type="text" th:value="${account.is_available_cms__c} ? '利用可' : '利用不可'" disabled>
+                  </div>
+                </div>
+-->                
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="is_available_pms__c">工務次長DX利用権限</label>
+                    <input id="is_available_pms__c" name="is_available_pms__c" class="form-control" type="text" th:value="${account.is_available_pms__c} ? '利用可' : '利用不可'" disabled>
+                  </div>
+                </div>  
+<!--                
+                <div class="row">     
+                  <div class="col-md-3 mb-3">
+                    <label for="is_available_iekachi__c">iekachi BOX利用権限</label>
+                    <input id="is_available_iekachi__c" name="is_available_iekachi__c" class="form-control" type="text" th:value="${account.is_available_iekachi__c} ? '利用可' : '利用不可'" disabled>
+                  </div>
+                </div>
+-->                
+                <!--
+                <div class="row">
+                  <div class="col-md-3 mb-3">
+                    <label for="architrend_rights__c">アーキトレンドCAD権利会員</label>
+                    <input id="architrend_rights__c" name="is_available_pms__c" class="form-control" type="text" th:value="${account.is_available_pms__c} ? '会員' : '非会員'" disabled>
+                  </div>
+                </div>
+                -->
+                <hr class="mb-4">
+                
+                <div class="d-flex justify-content-end">
+                  <a th:href="@{/portal/service}" class="mr-3 btn btn-secondary" role="button" aria-pressed="true">戻る</a>
+                  <input type="submit" id = "chgactive" class="btn btn-primary" value="確認" disabled/>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+     </div>
+    </main>
+  </div>
+</body>
+<script th:inline="javascript">
+$(function() {
+  var field = document.getElementById("chgactive");
+  
+
+  //インプットが切り替わったら起動
+  $('input').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+
+  //テキストエリアが切り替わったら起動
+  $('textarea').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+
+  //セレクトボックスが切り替わったら起動
+  $('select').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+  
+  //ラジオボタンが切り替わったら起動
+  $('radio').change(function() {
+ 
+    field.removeAttribute("disabled");
+
+  });
+  
+ //戻るボタンから遷移
+ if([[${return}]]){
+    field.removeAttribute("disabled");
+ }
+
+});
+</script>
+
+</html>

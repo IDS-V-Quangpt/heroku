@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.hyas.hpf.database.FileinfoRepository">
+
+  <!-- # ================================================== SQL定義 -->
+
+  <select id="count" resultType="long">
+    SELECT COUNT(*)
+      FROM hpf.fileinfo AS fi
+    <include refid="findByCriteriaWherePhrase">
+      <property name="alias" value="fi" />
+    </include>
+  </select>
+
+  <select id="search" resultMap="fileinfoResultMap">
+    SELECT fi.*,
+      <include refid="accountColumnsName">
+        <property name="alias" value="ac"/>
+        <property name="prefix" value="ac_"/>
+      </include>
+      FROM hpf.fileinfo AS fi
+      LEFT JOIN salesforce.account AS ac ON ac.corporationid__c = fi.corporation_id
+    <include refid="findByCriteriaWherePhrase">
+      <property name="alias" value="fi" />
+    </include>
+    <include refid="orderBy">
+      <property name="alias" value="fi"/>
+    </include>
+    LIMIT  #{pageable.pageSize}
+    OFFSET #{pageable.offset}
+  </select>
+
+  <select id="findOne" resultMap="fileinfoResultMap">
+    SELECT fi.*,
+      <include refid="accountColumnsName">
+        <property name="alias" value="ac"/>
+        <property name="prefix" value="ac_"/>
+      </include>
+      FROM hpf.fileinfo AS fi
+      LEFT JOIN salesforce.account AS ac ON ac.corporationid__c = fi.corporation_id
+     WHERE fi.fileinfo_id = #{ident}
+       AND fi.delete_flg = FALSE
+  </select>
+
+  <!-- # ================================================== 結果セット・リレーション取得定義 -->
+
+  <resultMap id="fileinfoBase" type="Fileinfo">
+    <id property="id" column="id" />
+    <result property="fileinfo_id" column="fileinfo_id" />
+    <result property="corporation_id" column="corporation_id" />
+    <result property="key_id" column="key_id" />
+    <result property="object_key" column="object_key" />
+    <result property="kind_tag" column="kind_tag" />
+    <result property="filename" column="filename" />
+    <result property="tag_01" column="tag_01" />
+    <result property="tag_02" column="tag_02" />
+    <result property="tag_03" column="tag_03" />
+    <result property="tag_04" column="tag_04" />
+    <result property="tag_05" column="tag_05" />
+    <result property="tag_06" column="tag_06" />
+    <result property="tag_07" column="tag_07" />
+    <result property="tag_08" column="tag_08" />
+    <result property="tag_09" column="tag_09" />
+    <result property="tag_10" column="tag_10" />
+    <result property="scope" column="scope" />
+    <result property="extension" column="extension" />
+    <result property="size" column="size" />
+    <result property="user_id" column="user_id" />
+    <result property="created_at" column="created_at" />
+    <result property="updated_at" column="updated_at" />
+    <result property="delete_flg" column="delete_flg" />
+  </resultMap>
+
+  <resultMap id="fileinfoResultMap" type="Fileinfo" extends="fileinfoBase">
+    <association property="corporation" javaType="hashmap" columnPrefix="ac_">
+      <result property="name" column="name"/>
+      <result property="namekana__c" column="namekana__c"/>
+      <result property="billingstate" column="billingstate"/>
+      <result property="billingcity" column="billingcity"/>
+      <result property="billingstreet" column="billingstreet"/>
+      <result property="buildingname__c" column="buildingname__c"/>
+    </association>
+  </resultMap>
+
+  <!-- # ================================================== SQLパーツ定義 -->
+
+  <!-- account一部フィールド -->
+  <sql id="accountColumnsName">
+    ${alias}.name AS ${prefix}name,
+    ${alias}.namekana__c AS ${prefix}namekana__c,
+    ${alias}.billingstate AS ${prefix}billingstate,
+    ${alias}.billingcity AS ${prefix}billingcity,
+    ${alias}.billingstreet AS ${prefix}billingstreet,
+    ${alias}.buildingname__c AS ${prefix}buildingname__c
+  </sql>
+
+  <sql id="findByCriteriaWherePhrase">
+    <where>
+      <if test="criteria.fileinfo_id != null">
+        AND ${alias}.fileinfo_id = #{criteria.fileinfo_id}
+      </if>
+      <if test="criteria.user_id != null">
+        AND ${alias}.user_id = #{criteria.user_id}
+      </if>
+      <if test="criteria.corporation_id != null">
+        AND ${alias}.corporation_id = #{criteria.corporation_id}
+      </if>
+      <if test="criteria.kind_tag != null">
+        AND ${alias}.kind_tag = #{criteria.kind_tag}
+      </if>
+      <if test="criteria.key_id != null">
+        AND ${alias}.key_id = #{criteria.key_id}
+      </if>
+      <if test="criteria.object_key != null">
+        AND ${alias}.object_key = #{criteria.object_key}
+      </if>
+      <if test="criteria.filename != null">
+        AND ${alias}.filename LIKE '%' || #{criteria.filename} || '%'
+      </if>
+      <foreach collection="tags" item="tag">
+        AND (
+          ${alias}.tag_01 = #{tag} OR
+          ${alias}.tag_02 = #{tag} OR
+          ${alias}.tag_03 = #{tag} OR
+          ${alias}.tag_04 = #{tag} OR
+          ${alias}.tag_05 = #{tag} OR
+          ${alias}.tag_06 = #{tag} OR
+          ${alias}.tag_07 = #{tag} OR
+          ${alias}.tag_08 = #{tag} OR
+          ${alias}.tag_09 = #{tag} OR
+          ${alias}.tag_10 = #{tag}
+        )
+      </foreach>
+      <if test="criteria.scope != null">
+        AND ${alias}.scope = CAST(#{criteria.scope} AS INTEGER)
+      </if>
+      <if test="criteria.extension != null">
+        AND ${alias}.extension = #{criteria.extension}
+      </if>
+      <if test="criteria.file_size != null">
+        AND ${alias}.size = CAST(#{criteria.file_size} AS INTEGER)
+      </if>
+
+      <!-- 登録日 -->
+      <if test="criteria.created_at != null">
+        AND ${alias}.created_at = CAST(#{criteria.created_at} AS TIMESTAMP)
+      </if>
+      <if test="criteria.created_at_from != null">
+        AND ${alias}.created_at &gt;= CAST(#{criteria.created_at_from} AS TIMESTAMP)
+      </if>
+      <if test="criteria.created_at_to != null">
+        AND ${alias}.created_at &lt;= CAST(#{criteria.created_at_to} AS TIMESTAMP)
+      </if>
+
+      AND ${alias}.delete_flg = false
+    </where>
+  </sql>
+
+  <sql id="orderBy">
+    <foreach item="item" collection="pageable.sort" open="ORDER BY" close="" separator=",">
+      ${alias}.${item.property} ${item.direction}
+    </foreach>
+  </sql>
+
+</mapper>

@@ -1,80 +1,76 @@
 buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-    }
-    dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE'
-        classpath 'gradle.plugin.com.jamesward:atom-gradle-plugin:0.0.1'
-    }
+	ext {
+		springBootVersion = '2.0.3.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
 }
 
 apply plugin: 'java'
+apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
-//apply plugin: 'com.jamesward.atomgradleplugin'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'jp.co.hyas.hpf'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
 
 repositories {
-    mavenLocal()
-    mavenCentral()
+	mavenCentral()
 }
+
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web:1.4.2.RELEASE'
-    compile 'org.springframework.boot:spring-boot-devtools:1.4.2.RELEASE'
-    compile 'org.springframework.boot:spring-boot-starter-security:1.4.2.RELEASE'
-    compile 'org.springframework.security.oauth:spring-security-oauth2:2.0.12.RELEASE'
-    compile 'org.webjars:salesforce-lightning-design-system:2.1.4'
-    compile 'org.webjars:jquery:3.1.1'
+	compile('org.springframework.boot:spring-boot-starter-web')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+    // build.gradleを右クリック > Gradle > Gradleプロジェクトのリフレッシュ
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	// web template
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect')
+    //compile('org.thymeleaf:thymeleaf-spring4')
+    // https://qiita.com/rubytomato@github/items/6f5dc142f32d9e9c1e2a
+    compile('org.springframework.boot:spring-boot-devtools')
+    compile('org.springframework.security:spring-security-core:4.0.1.RELEASE')
+
+    // SSL通信
+    compile('org.apache.httpcomponents:httpclient')
+
+	//compile('org.springframework.boot:spring-boot-starter-jdbc')
+	runtime('org.postgresql:postgresql')
+	//compile('org.lazyluke:log4jdbc-remix:0.2.7')
+	//runtime('com.h2database:h2')
+	compileOnly('org.projectlombok:lombok:1.18.0')
+	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2') // mybatis
+	// Redis
+    compile("org.apache.commons:commons-pool2:2.3")
+    compile("org.springframework.boot:spring-boot-starter-data-redis:1.4.0.RELEASE")
+    compile("org.springframework.session:spring-session-data-redis")
+	// SQLログ出力
+	//compile ('ch.qos.logback:logback-classic:1.1.7')
+	// https://mvnrepository.com/artifact/com.onelogin/java-saml/2.3.0
+	compile ('com.onelogin:java-saml:2.3.0') // SAML
+	compile ('xyz.downgoon:snowflake:1.0.0') // Snowflake ID生成
+
+	// AWS
+	compile('org.springframework.cloud:spring-cloud-starter-aws:2.0.0.RELEASE')
+	//compile('org.springframework.cloud:spring-cloud-aws-context')
+	//compile('org.springframework.cloud:spring-cloud-aws-autoconfigure')
+	//compile('com.amazonaws:aws-java-sdk-s3')
 }
 
-allprojects {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
+ext['thymeleaf.version'] = '3.0.9.RELEASE'
+ext['thymeleaf-layout-dialect.version'] = '2.3.0'
 
-/*
-atom {
-    filesToOpen = ['README.md']
-    packages = ['heroku-tools']
-}
-*/
+//ext['thymeleaf-extras-java8time.version'] = '3.0.0.RELEASE'
+//ext['thymeleaf-extras-data-attribute.version'] = '2.0.1'
 
-import org.gradle.internal.os.OperatingSystem
+// https://qiita.com/opengl-8080/items/eb3bf3b5301bae398cc2
+//ext['thymeleaf.version'] = '3.0.7.RELEASE'
+//ext['thymeleaf-layout-dialect.version'] = '2.2.2'
 
-task devClasses(type: Exec) {
-    if (OperatingSystem.current().isWindows())
-        commandLine 'gradlew', '-t', 'classes'
-    else
-        commandLine './gradlew', '-t', 'classes'
-}
-
-task devBootRun(type: Exec) {
-    if (OperatingSystem.current().isWindows())
-        commandLine 'gradlew', 'bootRun'
-    else
-        commandLine './gradlew', 'bootRun' //, '--debug-jvm'
-}
-
-import java.util.concurrent.*
-
-task dev() << {
-    def devClassesFuture = Executors.newSingleThreadExecutor().submit({ devClasses.execute() } as Callable)
-    def devBootRunFuture = Executors.newSingleThreadExecutor().submit({ devBootRun.execute() } as Callable)
-    devClassesFuture?.get()
-    devBootRunFuture?.get()
-}
-
-/*
-task devWithAtom {
-    dependsOn tasks.atom
-}
-*/
-
-task stage {
-    dependsOn build
-}
-
-//defaultTasks 'devWithAtom'
+//jar.baseName = 'thymeleaf'

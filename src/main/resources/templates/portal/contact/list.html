@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head th:replace="portal/layouts/default :: common_header(~{::title}, ~{::link})">
+  <title>担当者管理 - HPF ポータル</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body id="contact">
+  <style>
+    #contact ._page_content table.table.pc>thead>tr>th{
+      background-color: #583AB2;
+      color: #fff;
+      font-weight: normal;
+    }
+    #contact ._page_content table.table.pc th,
+    #contact ._page_content table.table.pc td{
+      padding: .4rem .5rem;
+    }
+
+    #contact ._page_content table.table.smphone {
+      margin-bottom: 2rem;
+    }
+    #contact ._page_content table.table.smphone th,
+    #contact ._page_content table.table.smphone td {
+      border: 2px solid #FFF;
+    }
+    #contact ._page_content table.table.smphone th {
+      padding-left: 1rem;
+      color: #FFF;
+      font-weight: normal;
+      background-color: #583AB2;
+      width: 40%;
+    }
+    #contact ._page_content table.table.smphone td{
+      padding-left: 1rem;
+      background-color: #D6D9E2;
+      width: 60%;
+    }
+
+@media screen and (max-width: 767px) {
+    #contact .btn-add-contact.pc {
+      display: none;
+    }
+    .btn-circle {
+      width: 3rem;
+      height: 3rem;
+      text-align: center;
+      padding: 0.5rem 0;
+      font-size: 1.3rem;
+      line-height: 1.3rem;
+      border-radius: 1.5rem;
+      background-color: #0099AB;
+      color: #FFF;
+    }
+
+}
+@media (min-width: 768px) {
+    #contact .btn-add-contact.smphone {
+      display: none;
+    }
+}
+
+    #contact-delete-confirm .theme-btn {
+      background-color: #0099AB;
+      border-color: #0099AB;
+      color: #fff;
+    }
+
+    #contact main {
+      position: relative;
+    }
+    #contact .btn-add-contact.pc {
+      position: fixed;
+      right: 0px;
+      margin-right: 3rem!important;
+      z-index: 1000;
+    }
+
+table {
+    width: 100%;
+}
+
+table th, .size-change{
+  white-space: nowrap;
+  width: auto !important;
+}
+
+table td{
+  border-right: 1px solid #dee2e6;
+}
+       
+  </style>
+  
+  <!-- _top_menu begin -->
+  <div th:replace="portal/layouts/default :: common_top_menu('contact')" />
+  <!-- _top_menu end -->
+
+  <div class="d-flex">  
+  <!-- _left_menu begin -->
+  <nav th:replace="portal/layouts/default :: common_left_menu('contact')" />
+  <!-- _left_menu end -->
+  
+    <main role="main" class="flex-grow-1">
+      
+      <div class="container-fluid mt-2">
+        <div class="col-12">
+          <section class="mb-4">
+            <div class="row mb-2 mt-4">
+              <h2 class="col-lg-4  col-mb-12 info" data-info="登録されている担当者一覧を表示しています。,担当者情報を編集する場合は、編集する担当者の編集ボタンを押してください。,担当者を追加する場合は、担当者追加ボタンを押してください。">担当者一覧</h2>
+                <a style="z-index:1;position: absolute;" class="btn btn-primary btn-add-contact pc" th:classappend="${pm_contact_regist_new != 1} ? disabled : ''"
+                 th:href="@{/portal/contact/edit}">＋ 担当者追加</a>
+              <!-- SP -->
+              <div class="col d-md-none">
+                <div style="padding: 2rem 2rem; padding-top:0.5rem">
+                  <a style="z-index:1position: absolute;;" class="btn btn-block btn-default btn-add-contact smphone theme-btn btn-primary" th:classappend="${pm_contact_regist_new != 1} ? disabled : ''"
+                   th:href="@{/portal/contact/edit}">＋ 担当者追加</a>
+                </div>
+              </div>
+
+            </div>
+            <ul class="nav nav-tabs"  role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active"
+                  aria-selected="true"
+                  data-toggle="tab"
+                  role="tab"
+                  aria-controls="tab-1"
+                  href="#tab-1"
+                  id="active-1">システム権限</a>
+              </li>
+              <!--
+              <li class="nav-item">
+                <a class="nav-link"
+                  aria-selected="false"
+                  data-toggle="tab"
+                  role="tab"
+                  aria-controls="tab-2"
+                  href="#tab-2"
+                  id="active-2">メルマガ配信</a>
+              </li>
+              -->
+            </ul>
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="active-1">
+                <div class="table-responsive-md" style="overflow-x: auto;">
+                  <table class="table table-striped row-clickable">
+                    <thead>
+                      <tr>
+                      <th scope="col">名前</th>
+                      <th scope="col">メール</th>
+                      <th scope="col">HyAS Platform権限</th>
+                      <th scope="col">RでGO</th>
+                      <!--
+                      <th scope="col">iekachi</th>
+                      -->
+                      <th scope="col">工務次長DX</th>
+                      <!--
+                      <th scope="col">CMS</th>
+                      -->
+                      <th scope="col"></th>
+                      <th scope="col">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="contact : ${contacts}">
+                        <td class="align-middle size-change" th:text="(${#strings.isEmpty(contact.lastname)} ? '' :  ${contact.lastname}) + ' ' + (${#strings.isEmpty(contact.firstname)} ? '' :  ${contact.firstname})"></td>
+                        <td class="align-middle size-change" th:text="${contact.email}"></td>
+                        <td class="align-middle size-change">
+                          <span th:if="${contact.hpf_permission__c} == 'owner'" class="font-10 badge badge-pill badge-primary" th:text="オーナー"></span>
+                          <span th:if="${contact.hpf_permission__c} == 'admin'" class="font-10 badge badge-pill badge-success" th:text="マネージャー"></span>
+                          <span th:if="${contact.hpf_permission__c} == 'member'" class="font-10 badge badge-pill badge-info" th:text="メンバー"></span>
+                        </td>
+                        <td class="align-middle size-change">
+                          <span th:if="${contact.role_of_r_de_go__c} == '利用不可'" class="font-10 badge badge-pill badge-secondary" th:text="${contact.role_of_r_de_go__c}"></span>
+                          <span th:if="${contact.role_of_r_de_go__c} == '利用可'" class="font-10 badge badge-pill badge-info" th:text="${contact.role_of_r_de_go__c}"></span>
+                          <span th:if="${contact.role_of_r_de_go__c} == '管理者'" class="font-10 badge badge-pill badge-primary" th:text="${contact.role_of_r_de_go__c}"></span>
+                        </td>
+                        <!--
+                        <td class="align-middle size-change">
+                          <span th:if="${contact.role_of_iekachi__c} == '利用不可'" class="font-10 badge badge-pill badge-secondary" th:text="${contact.role_of_iekachi__c}"></span>
+                          <span th:if="${contact.role_of_iekachi__c} == '利用可'" class="font-10 badge badge-pill badge-info" th:text="${contact.role_of_iekachi__c}"></span>
+                          <span th:if="${contact.role_of_iekachi__c} == '管理者'" class="font-10 badge badge-pill badge-primary" th:text="${contact.role_of_iekachi__c}"></span>
+                        </td>
+                        -->
+                        <td class="align-middle size-change">
+                          <span th:if="${contact.role_of_pms__c} == '利用不可'" class="font-10 badge badge-pill badge-secondary" th:text="${contact.role_of_pms__c}"></span>
+                          <span th:if="${contact.role_of_pms__c} == '利用可'" class="font-10 badge badge-pill badge-info" th:text="${contact.role_of_pms__c}"></span>
+                          <span th:if="${contact.role_of_pms__c} == '管理者'" class="font-10 badge badge-pill badge-primary" th:text="${contact.role_of_pms__c}"></span>
+                        </td>
+                        <!--
+                        <td class="align-middle size-change">
+                          <span th:if="${contact.role_of_cms__c} == '利用不可'" class="font-10 badge badge-pill badge-secondary" th:text="${contact.role_of_cms__c}"></span>
+                          <span th:if="${contact.role_of_cms__c} == '利用可'" class="font-10 badge badge-pill badge-info" th:text="${contact.role_of_cms__c}"></span>
+                          <span th:if="${contact.role_of_cms__c} == '管理者'" class="font-10 badge badge-pill badge-primary" th:text="${contact.role_of_cms__c}"></span>
+                        </td>
+                        -->
+                        <td class="align-middle size-change">
+                          <span th:if="${contact.retirement__c}" class="font-10 badge badge-pill badge-secondary">[[${contact.retirement__c} ? '退職' : ' ']]</span>
+                        </td>
+                        
+                        <td scope="row align-middle" style ="width: 100%">
+                         <a class="btn btn-small btn-primary" th:if="${@contactService.hasPermit('edit', contact, user_info)}" th:href="@{/portal/contact/edit(c=${contact.contact_id__c})}">編集
+                           <span class="mdi mdi-file-document-edit"></span>
+                         </a>
+                         <a class="btn btn-small btn-secondary" th:if="${@contactService.hasPermit('delete', contact, user_info)}" href="#" data-toggle="modal" data-target="#contact-delete-confirm" th:data-id="${contact.contact_id__c}">削除
+                           <span class="mdi mdi-close-circle"></span>
+                         </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+<!--              
+              <div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="active-2">
+                <div class="table-responsive-md" style="overflow-x: auto;">
+                  <table class="table table-striped row-clickable">
+                    <thead>
+                      <tr>
+                        <th scope="col">名前</th>
+                        <th scope="col">メール</th>
+                        <th scope="col">HPF権限</th>
+                        <th scope="col">R+house</th>
+                        <th scope="col">家価値（R+、ADM）</th>
+                        <th scope="col">家価値（一般）</th>
+                        <th scope="col">iekachiBOX</th>
+                        <th scope="col">FP</th>
+                        <th scope="col">FSM</th>
+                        <th scope="col">ADM</th>
+                        <th scope="col">AMS</th>
+                        <th scope="col">CMS</th>
+                        <th scope="col">HySP</th>
+                        <th scope="col">HyAS</th>
+                        <th scope="col">TMD</th>
+                        <th scope="col">GG</th>
+                        <th scope="col">HC</th>
+                        <th scope="col">HIH</th>
+                        <th scope="col">WS</th>
+                        <th scope="col">STAY</th>
+                        <th scope="col">デコス</th>
+                        <th scope="col">PMS</th>
+                        <th scope="col">TM</th>
+                        <th scope="col">R+建築家</th>
+                        <th scope="col">R+IC</th>
+                        <th scope="col">操作</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="contact : ${contacts}">
+                        <td class="align-middle" th:text="(${#strings.isEmpty(contact.lastname)} ? '' :  ${contact.lastname}) + ' ' + (${#strings.isEmpty(contact.firstname)} ? '' :  ${contact.firstname})"></td>
+                        <td class="align-middle" th:text="${contact.email}"></td>
+                        <td class="align-middle">
+                          <span th:if="${contact.hpf_permission__c} == 'owner'" class="font-10 badge badge-pill badge-primary" th:text="${contact.hpf_permission__c}"></span>
+                          <span th:if="${contact.hpf_permission__c} == 'admin'" class="font-10 badge badge-pill badge-success" th:text="${contact.hpf_permission__c}"></span>
+                          <span th:if="${contact.hpf_permission__c} == 'member'" class="font-10 badge badge-pill badge-info" th:text="${contact.hpf_permission__c}"></span>
+                        </td>
+                        
+                        
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinrplushouse__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinrplushouse__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagaziniekachiforrplusadm__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagaziniekachiforrplusadm__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagaziniekachiforippan__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagaziniekachiforippan__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagaziniekachibox__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagaziniekachibox__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinfp__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinfp__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinfsm__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinfsm__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinadm__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinadm__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinams__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinams__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazincms__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazincms__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinhysp__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinhysp__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazintochisma__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazintochisma__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazintmd__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazintmd__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazingg__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazingg__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinhc__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinhc__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinhih__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinhih__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinws__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinws__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinstay__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinstay__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazindecos__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazindecos__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinpms__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinpms__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazintm__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazintm__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinrpluskenchikuka__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinrpluskenchikuka__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        <td class="align-middle">
+                          <span th:if="${contact.needsmailmagazinrplusic__c}" class="font-10 badge badge-pill badge-primary">ON</span>
+                          <span th:unless="${contact.needsmailmagazinrplusic__c}" class="font-10 badge badge-pill badge-secondary">OFF</span>
+                        </td>
+                        
+                        
+                        <td scope="row align-middle">
+                         <a class="btn btn-small btn-primary" th:if="${@contactService.hasPermit('edit', contact, user_info)}" th:href="@{/portal/contact/edit(c=${contact.contact_id__c})}">編集
+                           <span class="mdi mdi-file-document-edit"></span>
+                         </a>
+                         <a class="btn btn-small btn-secondary" th:if="${@contactService.hasPermit('delete', contact, user_info)}" href="#" data-toggle="modal" data-target="#contact-delete-confirm" th:data-id="${contact.contact_id__c}">削除
+                           <span class="mdi mdi-close-circle"></span>
+                         </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>-->
+            </div> 
+          </section>
+        </div>
+      </div>
+      <!-- _page_content end -->
+    </main>
+  </div>
+  <!-- container-fluid end -->
+ <div class="modal fade" id="contact-delete-confirm" tabindex="-1" role="dialog" aria-labelledby="contact-delete-confirm-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+          <form method="post" class="w-100">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="contact-delete-confirm-title">担当者削除</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>担当者を削除します。よろしいですか？</p>
+        </div>
+        <div class="modal-footer" style="justify-content: center;">
+          <div class="w-100 row">
+            <div class="col-md-6" style="margin-bottom: 0.5rem">
+              <button type="submit" class="btn btn-block btn-primary theme-btn">削除</button>
+            </div>
+            <div class="col-md-6" style="margin-bottom: 0.5rem">
+              <button type="button" class="btn btn-block btn-secondary" data-dismiss="modal">キャンセル</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+            <input type="hidden" name="keycode" th:value="${keycode}">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="contact_id" value="" id="delete_contact_id">
+          </form>
+  </div>
+<script>
+$('#contact-delete-confirm').on('show.bs.modal', function (event) {
+  console.log(event);
+  // ターゲットを取得
+  var target = $(event.relatedTarget);
+  // data-***の部分を取得
+  var contact_id = target.data('id');
+  // 値の設定
+  $('#delete_contact_id').val(contact_id);
+});
+$('#contact-delete-confirm').on('hide.bs.modal', function (event) {
+  // 値の設定
+  $('#delete_contact_id').val('');
+});
+
+/*
+jQuery(function($){
+  $('.tab').click(function(){
+    
+    //システム管理者Tab
+    var change1 = document.getElementById("tab1");
+    var changeColor1 = document.getElementById("active1");
+    
+    //メルマガ配信対象者Tab
+    var change2 = document.getElementById("tab2");
+    var changeColor2 = document.getElementById("active2");
+        
+    // クリックしたタブからインデックス番号を取得
+    const index = $('a.tab').index(this);
+    
+    //システム管理者Tabクリック
+    if(index == 0){
+      //システム管理者Tabを表示
+      change1.style.display = "block";
+      changeColor1.classList.add("active");
+      
+      //メルマガ配信対象者Tabを非表示
+      change2.style.display = "none";
+      changeColor2.classList.remove("active");
+      
+    //メルマガ配信対象者Tabクリック
+    }else if(index == 1){
+      //システム管理者Tabを非表示
+      change1.style.display = "none";
+      changeColor1.classList.remove("active");
+     
+      //メルマガ配信対象者Tabを表示
+      change2.style.display = "block";
+      changeColor2.classList.add("active");
+    }
+    
+  });
+});
+*/
+</script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="common_header(title, links)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta http-equiv="content-language" content="ja">
+  <title th:replace="${title}">default title</title>
+  <script type="text/javascript" th:src="@{/js/holder.min.js}"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <link rel="stylesheet" th:href="@{/css/materialdesignicons.min.css}">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP:400,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script type="text/javascript" th:src="@{/js/main.js}"></script>
+<!--スマホボタン制御 -->
+  <link rel="shortcut icon" href="/img/icon/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/img/icon/favicon.png" sizes="180x180">
+  <link rel="icon" type="image/png" href="/img/icon/favicon.png" sizes="192x192">
+
+  <!-- 個別要素 -->
+  <th:block th:replace="${links}">
+</head>
+
+<!-- top_menu要素 -->
+<nav th:fragment="common_top_menu(select)" class="global-header">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+    <div class="logo-wrapper">
+      <img th:src="@{/img/icon/logo-horizontal.svg}" class="logo d-none d-sm-none d-md-block d-lg-block">
+      <img th:src="@{/img/icon/logo-simple.svg}" class="logo d-md-none d-lg-none">      
+    </div>
+    <div>
+      <span th:text="${user_info?.username}"></span><a href="#" id="toggleGlobalMenu" class="global-menu-toggle" style ="font-weight: bold; top: 3px;"><span class="mdi mdi-menu"></span></a>
+      <ul class="navbar-nav d-flex flex-direction-column position-absolute" style="z-index:2;">
+        <li class="nav-item">
+          <a th:href="@{/portal/logout/}"><span class="mdi mdi-logout"></span> ログアウト</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- left_menu要素 -->
+<div th:fragment="common_left_menu(select)" class="pr-1">
+  <div th:replace=":: common_left_menu_content('side-menu',|${select}|)" />
+</div>
+
+<!-- left_menu_body要素 -->
+<div th:fragment="common_left_menu_content(pos,select)" class="side-navigation-container">
+  <nav class="side-navigation">
+    <ul>
+      <li>
+        <a th:classappend="|${select=='service'?'sel':''}|" th:href="@{/portal/service}">
+          <span class="mdi mdi-view-dashboard"></span><span class="sidenav-text">トップページ</span>
+        </a>
+      </li>
+      
+      <li th:if="${pm_use_profile} == 1">
+        <a th:if="${pm_use_profile} == 1" th:classappend="|${select=='profile'?'sel':''}|" th:href="@{/portal/contact/edit?p=1}">
+          <span class="mdi mdi-account-badge"></span><span class="sidenav-text">個人情報参照/変更</span>
+        </a>
+        <a th:unless="${pm_use_profile} == 1" class="disabled" href="#">
+          <span class="mdi mdi-account-badge"></span><span class="sidenav-text">個人情報参照/変更</span>
+        </a>
+      </li>
+      
+      <li th:if="${pm_use_contact} == 1">
+        <a th:if="${pm_use_contact} == 1" th:classappend="|${select=='contact'?'sel':''}|" th:href="@{/portal/contact/}">
+          <span class="mdi mdi-contacts"></span><span class="sidenav-text">社員一覧</span>
+        </a>
+      </li>
+      <li th:if="${pm_use_account} == 1">
+        <a th:if="${pm_use_account} == 1" th:classappend="|${select=='corp'?'sel':''}|" th:href="@{/portal/corporation/edit}">
+          <span class="mdi mdi-office-building"></span><span class="sidenav-text">会社情報</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link" th:classappend="|${select=='inquiry'?'sel':''}|"
+          th:href="@{/portal/contact/inquiry}">
+          <span class="mdi mdi-email"></span><span class="sidenav-text">お問い合わせ</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <button class="button-side-navigation-control" id="toggleSideNavigation">
+    <span class="mdi mdi-chevron-double-left"></span>
+  </button>
+</div>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head th:replace="portal/layouts/default :: common_header(~{::title}, ~{::link})">
+  <title th:if="${view_mode} == 'profile'">プロフィール - HPF ポータル</title>
+  <title th:unless="${view_mode} == 'profile'">担当者入力完了 - HPF ポータル</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+  <!-- _top_menu begin -->
+  <div th:replace="portal/layouts/default :: common_top_menu(|${view_mode}|)" />
+  <!-- _top_menu end -->
+
+  <div class="d-flex">
+  <!-- _left_menu begin -->
+    <div th:if="${view_mode} == 'profile'" >
+      <nav th:replace="portal/layouts/default :: common_left_menu('profile')" />
+    </div>
+    <div th:unless="${view_mode} == 'profile'">
+      <nav th:replace="portal/layouts/default :: common_left_menu('contact')" />
+    </div>
+  <!-- _left_menu end -->
+    
+    <main role="main" class="flex-grow-1">
+      <div class="container mt-4 mb-4 pt-3 pb-4">
+        <div class="col-12 text-center">
+          <div class="col text-center">
+            <h2>登録完了しました</h2>
+          </div>
+          <hr/>
+          
+          <div class="d-flex justify-content-end">
+            <div class="row">
+              <div th:unless="${view_mode} == 'profile'" class="text-center">
+                <a th:href="@{/portal/contact/}" class="btn btn-primary" role="button" aria-pressed="true">戻る</a>
+              </div>
+              <div th:if="${view_mode} == 'profile'" class="text-center">
+                <a th:href="@{/portal/service/}" class="btn btn-primary" role="button" aria-pressed="true">戻る</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

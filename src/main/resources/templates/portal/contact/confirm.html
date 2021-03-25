@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head th:replace="portal/layouts/default :: common_header(~{::title}, ~{::link})">
+  <title th:if="${view_mode} == 'profile'">プロフィール入力確認 - HPF ポータル</title>
+  <title th:unless="${view_mode} == 'profile'">担当者情報入力確認 - HPF ポータル</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+  <!-- _top_menu begin -->
+  <div th:replace="portal/layouts/default :: common_top_menu(|${view_mode}|)" />
+  <!-- _top_menu end -->
+  
+  <div class="d-flex">
+  <!-- _left_menu begin -->
+    <div th:if="${view_mode} == 'profile'" >
+      <nav th:replace="portal/layouts/default :: common_left_menu('profile')" />
+    </div>
+    <div th:unless="${view_mode} == 'profile'">
+      <nav th:replace="portal/layouts/default :: common_left_menu('contact')" />
+    </div>
+  <!-- _left_menu end -->
+    <main role="main" class="flex-grow-1">
+      <div class="container mt-4 mb-4 pt-3 pb-4">
+        <div class="col-12">
+          <section class="">
+          <div class="_page_title">
+            <h2>担当者情報の変更確認</h2>
+            <!--<h2 class="info" th:if="${view_mode} == 'profile'">プロフィール編集確認</h2>-->
+            <div style="color: red;">まだ登録は完了しておりません。<br/>登録内容を確認し、画面下部の登録ボタンを押してください。<br/>登録内容の反映にはお時間をいただく場合があります。</div>
+          </div>
+          
+          <div class="_page_content">
+            <!--
+            <h3 class="mt-2 _page_title">アカウント情報</h3>
+            <div class="_confirm_area th:inline="text"">
+              <div class="row">
+                <div class="col-md-4 mb-4">
+                  <label for="corporationid__c">法人ID</label>
+                  <div class="col vl">[[${contact.corporationid__c}]]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                  <label for="contact_kind__c">ユーザー種別</label>
+                  <div class="col vl">[[${user_info.user_kind}]]</div>
+                </div>
+              </div>
+              <div class="row">  
+                <div class="col-md-4 mb-4">
+                  <label for="contact_id__c">担当者ID</label>
+                  <div class="col vl">[[${contact_form.contact_id__c}]]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                  <label for="hpf_permission__c">HyAS Platform権限</label>
+                  <div class="col vl">[[${contact_form.hpf_permission__c}]]</div>
+                </div>
+              </div>
+              -->
+              <h3 class="mt-2">担当者名</h3>
+              <div class="row">
+                <div class="col-md-4 mb-4">
+                  <label for="lastname">姓</label>
+                  <div class="col vl">[[${contact_form.lastname}]]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                  <label for="firstname">名</label>
+                  <div class="col vl">[[${contact_form.firstname}]]</div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-4 mb-4">
+                  <label for="lastnamekana__c">セイ</label>
+                  <div class="col vl">[[${contact_form.lastnamekana__c}]]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                  <label for="firstnamekana__c">メイ</label>
+                  <div class="col vl">[[${contact_form.firstnamekana__c}]]</div>
+                </div>
+              </div>
+              
+              <h3 class="mt-2">所属</h3>
+              <div class="row">
+                <div class="col-md-4 mb-4">
+                  <label for="belongbranchoffice__c">所属支店</label>
+                  <div class="col vl">[[${contact_form.belongbranchoffice__c}]]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                  <label for="department">部署</label>
+                  <div class="col vl">[[${contact_form.department}]]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                  <label for="title">役職</label>
+                  <div class="col vl">[[${contact_form.title}]]</div>
+                </div>
+<!--                
+                <div class="col-md-4 mb-4">
+                  <label for="representativename__c">代表者</label>
+                  <div class="col vl" th:if="${contact_form.representativename__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.representativename__c} != null">[[${contact_form.representativename__c} ? 'ON' : 'OFF']]</div>
+                </div>
+-->
+              </div>
+              
+              <h3 class="mt-2">住所</h3>
+              <div class="row">
+                <div class="col-md-3 mb-3">
+                  <label for="mailingpostalcode">郵便番号</label>
+                  <div class="col vl">[[${contact_form.mailingpostalcode}]]</div>
+                </div>
+              </div>
+              
+              <div class="row">
+               <div class="col-md-3 mb-3">
+                 <label for="mailingstate">都道府県</label>
+                 <div class="col vl">[[${contact_form.mailingstate}]]</div>
+               </div>
+               <div class="col-md-6 mb-3">
+                 <label for="mailingcity">市区郡</label>
+                 <div class="col vl">[[${contact_form.mailingcity}]]</div>
+               </div>
+               <div class="col-md-3 mb-3">
+                 <label for="mailingstreet">町名・番地</label>
+                 <div class="col vl">[[${contact_form.mailingstreet}]]</div>
+               </div>
+              </div>
+              
+              <div class="row">
+               <div class="col-md-6 mb-3">
+                 <label for="buildingname__c">ビル・マンション名</label>
+                 <div class="col vl">[[${contact_form.buildingname__c}]]</div>
+               </div>
+              </div>
+              
+              <h3 class="mt-2">連絡先</h3>
+              <div class="row">
+                <div class="col-md-4 mb-4">
+                  <label for="phone">TEL</label>
+                  <div class="col vl">[[${contact_form.phone}]]</div>
+                </div>
+                <div class="col-md-4 mb-4 d-none">
+                  <label for="donotcall">TEL NG</label>
+                  <div class="col vl" th:if="${contact_form.donotcall} == null"></div>
+                  <div class="col vl" th:if="${contact_form.donotcall} != null">[[${contact_form.donotcall} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                 <label for="mobilephone">携帯TEL</label>
+                 <div class="col vl">[[${contact_form.mobilephone}]]</div>
+                </div>
+                <div class="col-md-4 mb-4 d-none">
+                 <label for="mobilephoneng__c">携帯TEL NG</label>
+                 <div class="col vl" th:if="${contact_form.mobilephoneng__c} == null"></div>
+                 <div class="col vl" th:if="${contact_form.mobilephoneng__c} != null">[[${contact_form.mobilephoneng__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-4">
+                 <label for="fax">Fax</label>
+                 <div class="col vl">[[${contact_form.fax}]]</div>
+                </div>
+                <div class="col-md-4 mb-4 d-none">
+                 <label for="hasoptedoutoffax">Fax NG</label>
+                 <div class="col vl" th:if="${contact_form.hasoptedoutoffax} == null"></div>
+                 <div class="col vl" th:if="${contact_form.hasoptedoutoffax} != null">[[${contact_form.hasoptedoutoffax} ? 'ON' : 'OFF']]</div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-6">
+                  <label for="email">Email</label>
+                  <div class="col vl">[[${contact_form.email}]]</div>
+                </div>
+                <div class="col-md-6 mb-6 d-none">
+                  <label for="hasoptedoutofemail">Email NG</label>
+                  <div class="col vl" th:if="${contact_form.hasoptedoutofemail} == null"></div>
+                  <div class="col vl" th:if="${contact_form.hasoptedoutofemail} != null">[[${contact_form.hasoptedoutofemail} ? 'ON' : 'OFF']]</div>
+                </div>
+              </div>
+              <!--
+              <div class="row">
+                <div class="col-md-6 mb-6">
+                  <label for="mobilemail__c">携帯Email</label>
+                  <div class="col vl">[[${contact_form.mobilemail__c}]]</div>
+                </div>
+                <div class="col-md-6 mb-6 d-none">
+                  <label for="mobilemailng__c">携帯Email NG</label>
+                  <div class="col vl" th:if="${contact_form.mobilemailng__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.mobilemailng__c} != null">[[${contact_form.mobilemailng__c} ? 'ON' : 'OFF']]</div>
+                </div>
+              </div>
+              -->
+            </div>
+          </div>
+          
+          <div class="_page_title mt-2">
+            <div class="row">
+              <div class="col"><h2>システム利用権限設定</h2></div>
+            </div>
+          </div>
+          
+          <div class="_page_content">
+            <div class="_confirm_area th:inline="text"">
+              <h3 class="mt-2">利用権限</h3>
+              <div class="row">
+
+                <div class="col-md-3 mb-3">
+                  <label for="role_of_r_de_go__c">RでGo利用権限</label>
+                  <div class="col vl">[[${contact_form.role_of_r_de_go__c}]]</div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                  <label for="role_of_pms__c">工務次長DX利用権限</label>
+                  <div class="col vl">[[${contact_form.role_of_pms__c}]]</div>
+                </div>
+                
+              </div>
+<!--              
+              <h3 class="mt-2">メルマガ配信設定</h3>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <label for="plaza__c">HyAS PLAZA 送付希望</label>
+                  <div class="col vl" th:if="${contact_form.plaza__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.plaza__c} != null">[[${contact_form.plaza__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="plazamail__c">HyAS PLAZA NETメルマガ送付希望（会員様限定メルマガ）</label>
+                  <div class="col vl" th:if="${contact_form.plazamail__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.plazamail__c} != null">[[${contact_form.plazamail__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="view__c">HyAS View 送付希望</label>
+                  <div class="col vl" th:if="${contact_form.view__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.view__c} != null">[[${contact_form.view__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="viewmail__c">HyAS Viewnetメルマガ送付希望（業界情報通信）</label>
+                  <div class="col vl" th:if="${contact_form.viewmail__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.viewmail__c} != null">[[${contact_form.viewmail__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                
+                
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinrplushouse__c">HyAS R+houseメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinrplushouse__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinrplushouse__c} != null">[[${contact_form.needsmailmagazinrplushouse__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagaziniekachiforrplusadm__c">HyAS 家価値（R+、ADM）メルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagaziniekachiforrplusadm__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagaziniekachiforrplusadm__c} != null">[[${contact_form.needsmailmagaziniekachiforrplusadm__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagaziniekachiforippan__c">HyAS 家価値（一般）メルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagaziniekachiforippan__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagaziniekachiforippan__c} != null">[[${contact_form.needsmailmagaziniekachiforippan__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagaziniekachibox__c">HyAS iekachiBOXメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagaziniekachibox__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagaziniekachibox__c} != null">[[${contact_form.needsmailmagaziniekachibox__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinfp__c">HyAS FPメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinfp__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinfp__c} != null">[[${contact_form.needsmailmagazinfp__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinfsm__c">HyAS FSMメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinfsm__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinfsm__c} != null">[[${contact_form.needsmailmagazinfsm__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinadm__c">HyAS ADMメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinadm__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinadm__c} != null">[[${contact_form.needsmailmagazinadm__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinams__c">HyAS AMSメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinams__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinams__c} != null">[[${contact_form.needsmailmagazinams__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazincms__c">HyAS CMSメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazincms__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazincms__c} != null">[[${contact_form.needsmailmagazincms__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinhysp__c">HyAS HySPメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinhysp__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinhysp__c} != null">[[${contact_form.needsmailmagazinhysp__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazintochisma__c">HyAS トチスマメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazintochisma__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazintochisma__c} != null">[[${contact_form.needsmailmagazintochisma__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazintmd__c">HyAS TMDメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazintmd__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazintmd__c} != null">[[${contact_form.needsmailmagazintmd__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazingg__c">HyAS GGメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazingg__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazingg__c} != null">[[${contact_form.needsmailmagazingg__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinhc__c">HyAS HCメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinhc__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinhc__c} != null">[[${contact_form.needsmailmagazinhc__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinhih__c">HyAS HIHメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinhih__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinhih__c} != null">[[${contact_form.needsmailmagazinhih__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinws__c">HyAS WSメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinws__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinws__c} != null">[[${contact_form.needsmailmagazinws__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinstay__c">HyAS STAYメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinstay__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinstay__c} != null">[[${contact_form.needsmailmagazinstay__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazindecos__c">HyAS デコスメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazindecos__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazindecos__c} != null">[[${contact_form.needsmailmagazindecos__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinpms__c">HyAS PMSメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinpms__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinpms__c} != null">[[${contact_form.needsmailmagazinpms__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazintm__c">HyAS TMメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazintm__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazintm__c} != null">[[${contact_form.needsmailmagazintm__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinrpluskenchikuka__c">HyAS R+建築家メルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinrpluskenchikuka__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinrpluskenchikuka__c} != null">[[${contact_form.needsmailmagazinrpluskenchikuka__c} ? 'ON' : 'OFF']]</div>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label for="needsmailmagazinrplusic__c">HyAS R+ICメルマガ送付希望</label>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinrplusic__c} == null"></div>
+                  <div class="col vl" th:if="${contact_form.needsmailmagazinrplusic__c} != null">[[${contact_form.needsmailmagazinrplusic__c} ? 'ON' : 'OFF']]</div>
+                </div>
+              </div>
+              -->
+              <div class="edit-perm">
+                <h3 class="mt-2">認証</h3>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="is_approval_check__c">ログインの有効化/無効化</label>
+                    <div class="col vl" th:if="${contact_form.is_approval_check__c} == null"></div>
+                    <div class="col vl" th:if="${contact_form.is_approval_check__c} != null">[[${contact_form.is_approval_check__c} ? '有効化' : '無効化']]</div>
+                  </div>
+                  <!--
+                  <div class="col-md-4 mb-3">
+                    <label for="is_invalid__c">認証無効化要求</label>
+                    <div class="col vl" th:if="${contact_form.is_invalid__c} == null"></div>
+                    <div class="col vl" th:if="${contact_form.is_invalid__c} != null">[[${contact_form.is_invalid__c} ? 'ON' : 'OFF']]</div>
+                  </div>
+                  -->
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-12 mb-3 edit-perm">
+                    <label for="invalid_reason__c">備考</label>
+                    <div class="col vl">[[${contact_form.invalid_reason__c}]]</div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="retirement__c">退職</label>
+                    <div class="col vl" th:if="${contact_form.retirement__c} == null"></div>
+                    <div class="col vl" th:if="${contact_form.retirement__c} != null">[[${contact_form.retirement__c} ? 'ON' : 'OFF']]</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <h3 class="mt-2 _page_title">アカウント情報</h3>
+          <div class="row">  
+            <div class="col-md-4 mb-4">
+              <label for="contact_id__c">担当者ID</label>
+                <div class="col vl">[[${contact_form.contact_id__c}]]</div>
+            </div>
+            <div class="col-md-4 mb-4">
+              <label for="hpf_permission__c">HPF担当者権限</label>
+              <!--  <div class="col vl">[[${contact_form.hpf_permission__c}]]</div>-->
+              <div class="col vl" th:if="${contact_form.hpf_permission__c} == 'owner'" th:text="オーナー"></div>
+              <div class="col vl" th:if="${contact_form.hpf_permission__c} == 'admin'" th:text="マネージャー"></div>
+              <div class="col vl" th:if="${contact_form.hpf_permission__c} == 'member'" th:text="メンバー"></div>
+              <input type="hidden" id="hpf_permission__c" name="hpf_permission__c" th:value="${contact_form.hpf_permission__c}">
+            </div>
+          </div>
+          <br>
+          <div class="d-flex justify-content-end">
+            <form method="post" th:action="@{/portal/contact/regist}">
+              <input type="hidden" id="__key_code" name="__key_code" th:value="${contact_form.__key_code}">
+              <a th:href="@{/portal/contact/edit/?b=1}" class="mr-3 btn btn-secondary" role="button" aria-pressed="true">戻る</a>
+              <input type="submit" class="btn btn-primary" value="登録" />
+            </form>
+          </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+<style>
+._page_content>._confirm_area .row {
+  border-bottom: 1px solid #ddd;
+}
+._page_content>._confirm_area .row {
+  border-bottom: 1px solid #ddd;
+  padding: 2rem 0 0.3rem 0;
+}
+._page_content>._confirm_area .row>.hd {
+  max-width: 30%;
+  word-break: break-all;
+}
+._page_content>._confirm_area .row>.vl {
+  max-width: 70%;
+  word-break: break-all;
+}
+@media screen and (max-width:576px) {
+  ._page_content>._confirm_area .row>.hd {
+    max-width: 40%;
+  }
+  ._page_content>._confirm_area .row>.vl {
+    max-width: 60%;
+  }
+}
+</style>
+<style th:unless="${is_ediable.edit_perm}">
+.edit-perm {
+  display: none;
+}
+</style>
+</body>
+</html>

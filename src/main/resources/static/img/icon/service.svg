@@ -1,0 +1,15 @@
+<svg id="baseline-dashboard-24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #23ddcd;
+      }
+    </style>
+  </defs>
+  <path id="パス_786" data-name="パス 786" class="cls-1" d="M0,0H18V18H0Z"/>
+  <path id="パス_787" data-name="パス 787" class="cls-2" d="M3,10.5H9V3H3Zm0,6H9V12H3Zm7.5,0h6V9h-6ZM10.5,3V7.5h6V3Z" transform="translate(-0.75 -0.75)"/>
+</svg>
